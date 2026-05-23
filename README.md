@@ -2,7 +2,14 @@
 
 A comprehensive, modular web application designed for the extraction, processing, and visualization of high-frequency seismic and structural monitoring data. Built with a robust Flask backend and an interactive web frontend, this suite automates complex analytical tasks such as Fast Fourier Transform (FFT) filtering, response spectrum generation, and multi-profile comparative analysis.
 
-<img width="1837" height="903" alt="Screenshot 2026-05-23 125017" src="https://github.com/user-attachments/assets/09137628-b69e-4975-818e-8f5df8723632" />
+
+<img width="1382" height="845" alt="Screenshot 2026-05-23 143713" src="https://github.com/user-attachments/assets/7528f2b0-39da-454f-a34c-0f41f4bb6cf3" />
+<img width="2860" height="1984" alt="Compare_2026-05-23_14-40-06_Filt_0to20Hz_X" src="https://github.com/user-attachments/assets/f9038e57-b77e-4e1e-bec9-c5ab8d8cf450" />
+<img width="2860" height="1984" alt="Compare_2026-05-23_14-40-06_Resp_X" src="https://github.com/user-attachments/assets/66917bfd-71e8-4e85-9e4f-34fa2a4df051" />
+
+
+
+
 
 *(Caption: Overview of the Master App WebUI)*
 
@@ -82,13 +89,6 @@ An advanced graphing engine for cross-analyzing distinct seismic events or struc
 *(Caption: Building a multi-profile comparative overlay)*
 
 
-
-
-
-
-### 6. Example of a 3-profile comparative overlay (App 5)
-<img width="3150" height="2187" alt="Compare_2026-05-23_11-52-49_Filt_0to20Hz_X" src="https://github.com/user-attachments/assets/faf20eb9-dd00-49dc-8983-8c267d31e918" />
-<img width="3150" height="2187" alt="Compare_2026-05-23_12-06-34_Resp_X" src="https://github.com/user-attachments/assets/18d2cabd-7ddb-41a9-8af0-b44366eff9ab" />
 
 ---
 
