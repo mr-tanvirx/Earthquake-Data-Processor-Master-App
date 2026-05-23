@@ -91,11 +91,11 @@ This application is packaged with an automated setup script designed for Windows
 
 1. Clone this repository to your local machine.
 2. Ensure Python 3 is installed and added to your system PATH.
-3. [cite_start]Double-click the `run_master.bat` file[cite: 41]. 
+3. Double-click the `run_master.bat` file. 
 4. The script will automatically:
-   * [cite_start]Create an isolated virtual environment (`venv`)[cite: 41].
-   * [cite_start]Install all required dependencies (`flask`, `pandas`, `numpy`, `matplotlib`, `pyarrow`, `fastparquet`, `boto3`, `plotly`)[cite: 42].
-   * [cite_start]Launch the Flask server[cite: 42].
+   * Create an isolated virtual environment (`venv`).
+   * Install all required dependencies (`flask`, `pandas`, `numpy`, `matplotlib`, `pyarrow`, `fastparquet`, `boto3`, `plotly`).
+   * Launch the Flask server.
 5. Your default web browser will automatically open to `http://localhost:5000`.
 
 ### AWS S3 Configuration
