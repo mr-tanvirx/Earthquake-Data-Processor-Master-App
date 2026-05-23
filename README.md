@@ -11,7 +11,7 @@ A comprehensive, modular web application designed for the extraction, processing
 
 
 
-*Caption: Overview of the Master App WebUI*
+*(Caption: Overview of the Master App WebUI)*
 
 ## Core Capabilities
 
@@ -42,7 +42,7 @@ Provides a granular analysis tool for specific, pre-downloaded datasets.
 <img width="1024" height="778" alt="Screenshot 2026-05-23 125502" src="https://github.com/user-attachments/assets/960d7a81-4bd3-4f4e-8722-43173bc047c3" />
 
 <img width="1033" height="737" alt="Screenshot 2026-05-23 125511" src="https://github.com/user-attachments/assets/0a8dab6b-f313-4daf-8dec-36063c3fb02c" />
-*(Caption: Granular visualization settings and state management)*
+(Caption: Granular visualization settings and state management)*
 
 <img width="1867" height="881" alt="Screenshot 2026-05-23 125525" src="https://github.com/user-attachments/assets/8ce3d191-b24e-448d-8306-134af9e8f3e7" />
 
