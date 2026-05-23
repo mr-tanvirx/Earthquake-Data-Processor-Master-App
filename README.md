@@ -94,8 +94,8 @@ A diagnostic tool that scans local and cloud directories to render SVG calendars
 A high-throughput batch processing engine for data transformation.
 <p align="center"><img width="900" src="https://github.com/user-attachments/assets/b6a50b1b-0ca9-4479-8bed-89a9cfc69e41" /></p>
 
-### App 5: Multi-Event Comparative Analysis
-Cross-analyze distinct seismic events. Swap structural axes or multiply data by scalars to dynamically correct sensor misalignments during plotting.
+### App 5: Multi-Station Comparative Analysis
+Cross-analyze distinct seismic event's record on different stations. Swap structural axes or multiply data by scalars to dynamically correct sensor misalignments during plotting.
 <p align="center">
   <img width="49%" src="https://github.com/user-attachments/assets/361ff285-a8f8-4598-9215-1561362c72ff" />
   <img width="49%" src="https://github.com/user-attachments/assets/3c02a8f8-bc5d-4b39-8934-0f18ed2c1355" />
@@ -121,7 +121,7 @@ Cross-analyze distinct seismic events. Swap structural axes or multiply data by 
 ## ⚠️ Troubleshooting
 
 * **Server immediately closes when running `.bat`:** Ensure Python is added to your Windows `PATH`. Open a command prompt and type `python --version` to verify.
-* **AWS Connectivity Errors:** Ensure you populate `AWS_ACCESS_KEY` and `AWS_SECRET_KEY` variables securely within `processor_shared.py` (or load them via a `.env` file) to execute S3 queries in Apps 1 and 3.
+* **AWS Connectivity Errors:** Ensure you populate `AWS_ACCESS_KEY` and `AWS_SECRET_KEY` variables securely within `processor_shared.py` to execute S3 queries in Apps 1 and 3.
 * **Missing Interactive Plots:** The interactive plotting relies on Plotly HTML generation. Ensure JavaScript is enabled in your web browser.
 
 ---
@@ -130,11 +130,6 @@ Cross-analyze distinct seismic events. Swap structural axes or multiply data by 
 
 Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
 
 ---
 
@@ -144,5 +139,5 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ---
 <div align="center">
-  <b>Built with Python & ❤️</b>
+  <b>Built with Python </b>
 </div>
