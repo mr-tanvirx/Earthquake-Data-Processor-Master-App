@@ -30,7 +30,7 @@ This repository contains a modular, web-based analytics dashboard engineered for
 - **🔍 Global Dual-Source Extraction:** Simultaneously pull data from local archive directories and AWS S3 cloud storage buckets.
 - **⚡ High-Speed Batch Conversion:** Recursively traverse directory trees to convert thousands of compressed `.parquet` files to `.csv` format while preserving folder hierarchy.
 - **🔄 Automated Task Chaining:** Queue multiple local station folders for sequential, automated FFT filtering and plotting.
-- **⏱️ Advanced Signal Processing:** Implement custom Python numerical integration (Newmark-beta methodology) and NumPy FFT for precise baseline drift correction and sensor noise elimination.
+- **⏱️ Advanced Signal Processing:** Implement custom Python numerical integration for Response Spectrum and NumPy FFT for sensor noise elimination.
 - **🖥️ Interactive Dashboards:** Generate comprehensive SVG calendar heatmaps for sensor uptime and output interactive Plotly HTML graphs with infinite zoom.
 - **🛑 State Management:** Export and import precise analysis configurations as `.json` files to recreate past analysis states instantly.
 - **🚀 One-Click Setup:** Includes a `.bat` script that automatically creates isolated virtual environments, installs scientific dependencies, and launches the server.
@@ -52,7 +52,7 @@ Deployment is streamlined via an automated Windows batch script.
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/yourusername/earthquake-data-processor.git
+   git clone https://github.com/mr-tanvirx/Earthquake-Data-Processor-Master-App.git
    cd earthquake-data-processor
    ```
 
