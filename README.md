@@ -11,7 +11,7 @@ A comprehensive, modular web application designed for the extraction, processing
 
 
 
-*(Caption: Overview of the Master App WebUI)*
+*Caption: Overview of the Master App WebUI*
 
 ## Core Capabilities
 
