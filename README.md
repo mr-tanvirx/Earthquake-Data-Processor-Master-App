@@ -3,7 +3,8 @@
 A comprehensive, modular web application designed for the extraction, processing, and visualization of high-frequency seismic and structural monitoring data. Built with a robust Flask backend and an interactive web frontend, this suite automates complex analytical tasks such as Fast Fourier Transform (FFT) filtering, response spectrum generation, and multi-profile comparative analysis.
 
 
-<img width="1382" height="845" alt="Screenshot 2026-05-23 143713" src="https://github.com/user-attachments/assets/7528f2b0-39da-454f-a34c-0f41f4bb6cf3" />
+<img width="1897" height="908" alt="Screenshot 2026-05-23 144555" src="https://github.com/user-attachments/assets/94d9962e-baa6-4fd6-885d-14ee4b105193" />
+
 <img width="2860" height="1984" alt="Compare_2026-05-23_14-40-06_Filt_0to20Hz_X" src="https://github.com/user-attachments/assets/f9038e57-b77e-4e1e-bec9-c5ab8d8cf450" />
 <img width="2860" height="1984" alt="Compare_2026-05-23_14-40-06_Resp_X" src="https://github.com/user-attachments/assets/66917bfd-71e8-4e85-9e4f-34fa2a4df051" />
 
@@ -42,7 +43,8 @@ Provides a granular analysis tool for specific, pre-downloaded datasets.
 <img width="1024" height="778" alt="Screenshot 2026-05-23 125502" src="https://github.com/user-attachments/assets/960d7a81-4bd3-4f4e-8722-43173bc047c3" />
 
 <img width="1033" height="737" alt="Screenshot 2026-05-23 125511" src="https://github.com/user-attachments/assets/0a8dab6b-f313-4daf-8dec-36063c3fb02c" />
-(Caption: Granular visualization settings and state management)*
+
+(Caption: Granular visualization settings and state management)
 
 <img width="1867" height="881" alt="Screenshot 2026-05-23 125525" src="https://github.com/user-attachments/assets/8ce3d191-b24e-448d-8306-134af9e8f3e7" />
 
