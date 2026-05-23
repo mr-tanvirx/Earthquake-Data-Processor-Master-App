@@ -1,121 +1,148 @@
-# Earthquake Data Processor Suite
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/94d9962e-baa6-4fd6-885d-14ee4b105193" alt="Project Banner" width="100%">
 
-A comprehensive, modular web application designed for the extraction, processing, and visualization of high-frequency seismic and structural monitoring data. Built with a robust Flask backend and an interactive web frontend, this suite automates complex analytical tasks such as Fast Fourier Transform (FFT) filtering, response spectrum generation, and multi-profile comparative analysis.
-
-
-<img width="1897" height="908" alt="Screenshot 2026-05-23 144555" src="https://github.com/user-attachments/assets/94d9962e-baa6-4fd6-885d-14ee4b105193" />
-
-<img width="2860" height="1984" alt="Compare_2026-05-23_14-40-06_Filt_0to20Hz_X" src="https://github.com/user-attachments/assets/f9038e57-b77e-4e1e-bec9-c5ab8d8cf450" />
-<img width="2860" height="1984" alt="Compare_2026-05-23_14-40-06_Resp_X" src="https://github.com/user-attachments/assets/66917bfd-71e8-4e85-9e4f-34fa2a4df051" />
-
-
-
-
-
-*(Caption: Overview of the Master App WebUI)*
-
-## Core Capabilities
-
-The suite is divided into five distinct processing modules, each engineered to handle a specific stage of the seismic data workflow.
-
-### 1. Global Archive Search & Processing (App 1)
-Automates the retrieval of earthquake data across distributed storage systems.
-* **Dual-Source Extraction:** Simultaneously pulls data from local archive directories and AWS S3 cloud storage buckets.
-* **Automated Data Slicing:** Extracts precise time windows (e.g., 10 seconds before and 90 seconds after an event) from massive `.parquet` datasets.
-* **Analytical Plotting:** Generates both static (Matplotlib SVG) and interactive (Plotly HTML) visualizations of raw acceleration, filtered signals, and response spectrums.
-
-
-<img width="1107" height="741" alt="Screenshot 2026-05-23 125244" src="https://github.com/user-attachments/assets/59bd7349-3e34-407c-af68-53afc5a5d28c" />
-
-*(Caption: Configuring a global search and filter parameters)*
-
-### 2. Direct CSV/Parquet Visualization (App 2)
-Provides a granular analysis tool for specific, pre-downloaded datasets.
-* **Config State Management:** Export and import precise analysis configurations as `.json` files to perfectly recreate past analysis states.
-* **Advanced Filtering:** Apply customizable band-pass filters and damping ratios to targeted timeframes.
-* **Batch Execution:** Queue multiple local station folders for sequential, automated processing.
-
-
-<img width="999" height="878" alt="Screenshot 2026-05-23 125429" src="https://github.com/user-attachments/assets/e46b29bb-1862-4ec0-ad92-af71ddc3f551" />
-
-<img width="1037" height="320" alt="Screenshot 2026-05-23 125446" src="https://github.com/user-attachments/assets/f4da6d72-3947-4b3f-a0bd-ed38b146e5df" />
-
-<img width="1024" height="778" alt="Screenshot 2026-05-23 125502" src="https://github.com/user-attachments/assets/960d7a81-4bd3-4f4e-8722-43173bc047c3" />
-
-<img width="1033" height="737" alt="Screenshot 2026-05-23 125511" src="https://github.com/user-attachments/assets/0a8dab6b-f313-4daf-8dec-36063c3fb02c" />
-
-(Caption: Granular visualization settings and state management)
-
-<img width="1867" height="881" alt="Screenshot 2026-05-23 125525" src="https://github.com/user-attachments/assets/8ce3d191-b24e-448d-8306-134af9e8f3e7" />
-
-*(Caption: Interactive plot with infinite zoom and range selector using HTML)*
-
-### 3. BLCA Data Availability Dashboard (App 3)
-A diagnostic tool that scans massive structural monitoring archives to visualize uptime and data completeness.
-* **Cloud & Local Scanning:** Maps the directory structures of both local hard drives and AWS S3 buckets.
-* **Visual Calendar Generation:** Renders a comprehensive SVG calendar dashboard highlighting specific hours and days where sensor data is available, missing, or corrupted.
-
-
-<img width="1020" height="821" alt="Screenshot 2026-05-23 125731" src="https://github.com/user-attachments/assets/9dd36621-fac6-47c6-af13-bd8e75ec15c6" />
-
-<img width="1526" height="815" alt="Screenshot 2026-05-23 130751" src="https://github.com/user-attachments/assets/2c2bdd9f-813a-48b6-a8f8-1fec9346498d" />
-
-<img width="1515" height="619" alt="Screenshot 2026-05-23 130736" src="https://github.com/user-attachments/assets/1e3220d3-b5da-446d-884f-a364cc8aa2b1" />
-
-*(Caption: Generated SVG calendar showing sensor uptime)*
-
-### 4. High-Speed Format Converter (App 4)
-A localized batch processing engine for data transformation.
-* **Automated Batching:** Recursively scans a root directory for thousands of compressed `.parquet` files.
-* **Structural Integrity:** Converts all files to `.csv` format while perfectly replicating the original folder hierarchy in the output destination.
-
-<img width="952" height="491" alt="Screenshot 2026-05-23 130946" src="https://github.com/user-attachments/assets/b6a50b1b-0ca9-4479-8bed-89a9cfc69e41" />
-
-*(Caption: Batch conversion progress interface)*
-
-### 5. Multi-Event Comparative Analysis (App 5)
-An advanced graphing engine for cross-analyzing distinct seismic events or structural profiles.
-* **Custom Timeline Overlays:** Overlay data from different sensors or entirely different earthquakes onto a single, synchronized relative timeline.
-* **Data Manipulation:** Swap X and Y axes or multiply data by -1 to correct sensor misalignments on the fly.
-* **Comparative Spectrums:** Generate grouped response spectrum plots mapping multiple damping ratios across multiple structural profiles simultaneously.
-
-
-
-<img width="947" height="848" alt="Screenshot 2026-05-23 131059" src="https://github.com/user-attachments/assets/361ff285-a8f8-4598-9215-1561362c72ff" />
-
-<img width="845" height="228" alt="Screenshot 2026-05-23 131123" src="https://github.com/user-attachments/assets/bf2c6100-a1e2-479f-a7a2-003aa5fd2ea8" />
-
-<img width="856" height="773" alt="Screenshot 2026-05-23 131138" src="https://github.com/user-attachments/assets/3c02a8f8-bc5d-4b39-8934-0f18ed2c1355" />
-
-*(Caption: Building a multi-profile comparative overlay)*
-
-
+  # 🌍 Earthquake Data Processor Suite
+  
+  *A comprehensive, modular web application designed for the extraction, processing, and visualization of high-frequency seismic and structural monitoring data.*
+  
+  ![Python](https://img.shields.io/badge/Python-3.8%2B-blue?style=for-the-badge&logo=python&logoColor=white)
+  ![Flask](https://img.shields.io/badge/Flask-Web_UI-black?style=for-the-badge&logo=flask&logoColor=white)
+  ![Pandas](https://img.shields.io/badge/Pandas-Data_Processing-150458?style=for-the-badge&logo=pandas&logoColor=white)
+  ![AWS S3](https://img.shields.io/badge/AWS_S3-Cloud_Storage-569A31?style=for-the-badge&logo=amazons3&logoColor=white)
+  ![Platform](https://img.shields.io/badge/Platform-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)
+</div>
 
 ---
 
-## Technical Architecture
+## 📖 Overview
 
-* **Frontend:** HTML5, CSS Variables (Dark/Light mode native), JavaScript (Server-Sent Events for live terminal streaming).
-* **Backend:** Python 3, Flask.
-* **Data Processing:** Pandas, NumPy, PyArrow, FastParquet.
-* **Signal Processing:** Custom Python numerical integration for Response Spectrum (Newmark-beta methodology), NumPy FFT for signal filtering.
-* **Visualization:** Matplotlib (Agg backend for thread-safe SVGs), Plotly (Interactive HTML exports).
-* **Cloud Integration:** Boto3 (AWS S3).
+This repository contains a modular, web-based analytics dashboard engineered for civil and structural engineering researchers. Built on a robust Flask backend, it integrates local file processing with AWS S3 cloud archiving. The suite automates complex analytical pipelines including Fast Fourier Transform (FFT) filtering, numerical integration (acceleration to velocity/displacement), response spectrum generation, and multi-profile comparative analysis.
+
+<p align="center">
+  <img width="49%" alt="Compare Plot 1" src="https://github.com/user-attachments/assets/f9038e57-b77e-4e1e-bec9-c5ab8d8cf450" />
+  <img width="49%" alt="Compare Plot 2" src="https://github.com/user-attachments/assets/66917bfd-71e8-4e85-9e4f-34fa2a4df051" />
+</p>
 
 ---
 
-## Installation and Execution
+## ✨ Features
 
-This application is packaged with an automated setup script designed for Windows environments.
+- **🔍 Global Dual-Source Extraction:** Simultaneously pull data from local archive directories and AWS S3 cloud storage buckets.
+- **⚡ High-Speed Batch Conversion:** Recursively traverse directory trees to convert thousands of compressed `.parquet` files to `.csv` format while preserving folder hierarchy.
+- **🔄 Automated Task Chaining:** Queue multiple local station folders for sequential, automated FFT filtering and plotting.
+- **⏱️ Advanced Signal Processing:** Implement custom Python numerical integration (Newmark-beta methodology) and NumPy FFT for precise baseline drift correction and sensor noise elimination.
+- **🖥️ Interactive Dashboards:** Generate comprehensive SVG calendar heatmaps for sensor uptime and output interactive Plotly HTML graphs with infinite zoom.
+- **🛑 State Management:** Export and import precise analysis configurations as `.json` files to recreate past analysis states instantly.
+- **🚀 One-Click Setup:** Includes a `.bat` script that automatically creates isolated virtual environments, installs scientific dependencies, and launches the server.
 
-1. Clone this repository to your local machine.
-2. Ensure Python 3 is installed and added to your system PATH.
-3. Double-click the `run_master.bat` file. 
-4. The script will automatically:
-   * Create an isolated virtual environment (`venv`).
-   * Install all required dependencies (`flask`, `pandas`, `numpy`, `matplotlib`, `pyarrow`, `fastparquet`, `boto3`, `plotly`).
-   * Launch the Flask server.
-5. Your default web browser will automatically open to `http://localhost:5000`.
+---
 
-### AWS S3 Configuration
-If utilizing the cloud-search features (App 1 and App 3), ensure you populate the `AWS_ACCESS_KEY` and `AWS_SECRET_KEY` variables securely within `processor_shared.py` (or load them via a `.env` file to prevent exposing credentials).
+## 🛠️ Prerequisites
+
+Before you begin, ensure you have met the following requirements:
+* **Operating System:** Windows 10/11 (Required for the `run_master.bat` automated setup script).
+* **Python:** [Python 3.8+](https://www.python.org/downloads/) installed and added to your system `PATH`.
+* **AWS Credentials:** Required *only* if accessing S3 cloud archive functionalities (configured via standard AWS credential chains or within `processor_shared.py`).
+
+---
+
+## 🚀 Installation & Quick Start
+
+Deployment is streamlined via an automated Windows batch script. 
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/yourusername/earthquake-data-processor.git
+   cd earthquake-data-processor
+   ```
+
+2. **Run the Automated Setup:**
+   Double-click the `run_master.bat` file in the project root.
+   
+   *What happens next?*
+   - The script creates a dedicated Python virtual environment (`venv`).
+   - It upgrades `pip` and installs essential scientific packages (`pandas`, `numpy`, `pyarrow`, `fastparquet`).
+   - It installs web and cloud dependencies (`flask`, `boto3`, `plotly`, `matplotlib`).
+   - It launches the Flask development server and automatically opens your default web browser to the app's local network address (`http://localhost:5000`).
+
+---
+
+## 💻 Usage Guide
+
+The suite is divided into five distinct processing modules.
+
+### App 1: Global Archive Search
+Automates the retrieval of earthquake data. Extract precise time windows from massive datasets and generate static (SVG) and interactive (HTML) visualizations.
+<p align="center"><img width="900" src="https://github.com/user-attachments/assets/59bd7349-3e34-407c-af68-53afc5a5d28c" /></p>
+
+### App 2: Direct CSV/Parquet Visualization
+A granular visual analysis tool for specific datasets. Apply customizable band-pass filters and damping ratios to targeted timeframes.
+<p align="center">
+  <img width="49%" src="https://github.com/user-attachments/assets/e46b29bb-1862-4ec0-ad92-af71ddc3f551" />
+  <img width="49%" src="https://github.com/user-attachments/assets/960d7a81-4bd3-4f4e-8722-43173bc047c3" />
+</p>
+<p align="center"><img width="100%" src="https://github.com/user-attachments/assets/8ce3d191-b24e-448d-8306-134af9e8f3e7" /></p>
+
+### App 3: BLCA Data Availability Dashboard
+A diagnostic tool that scans local and cloud directories to render SVG calendars highlighting sensor uptime.
+<p align="center">
+  <img width="49%" src="https://github.com/user-attachments/assets/9dd36621-fac6-47c6-af13-bd8e75ec15c6" />
+  <img width="49%" src="https://github.com/user-attachments/assets/2c2bdd9f-813a-48b6-a8f8-1fec9346498d" />
+</p>
+
+### App 4: High-Speed Format Converter
+A high-throughput batch processing engine for data transformation.
+<p align="center"><img width="900" src="https://github.com/user-attachments/assets/b6a50b1b-0ca9-4479-8bed-89a9cfc69e41" /></p>
+
+### App 5: Multi-Event Comparative Analysis
+Cross-analyze distinct seismic events. Swap structural axes or multiply data by scalars to dynamically correct sensor misalignments during plotting.
+<p align="center">
+  <img width="49%" src="https://github.com/user-attachments/assets/361ff285-a8f8-4598-9215-1561362c72ff" />
+  <img width="49%" src="https://github.com/user-attachments/assets/3c02a8f8-bc5d-4b39-8934-0f18ed2c1355" />
+</p>
+
+---
+
+## 📂 Project Structure
+
+```text
+├── master_app.py              # Main Flask application and asynchronous task orchestrator
+├── processor_shared.py        # Core signal processing logic, mathematical integration, and AWS config
+├── processor_app1.py          # App 1: Search EQ Archive (S3/Local)
+├── processor_app2.py          # App 2: Visualizing CSV Data
+├── processor_app3.py          # App 3: BLCA Data Availability
+├── processor_app4.py          # App 4: Parquet to CSV batch converter
+├── processor_app5.py          # App 5: Compare Plots engine
+└── run_master.bat             # Automated Windows deployment script
+```
+
+---
+
+## ⚠️ Troubleshooting
+
+* **Server immediately closes when running `.bat`:** Ensure Python is added to your Windows `PATH`. Open a command prompt and type `python --version` to verify.
+* **AWS Connectivity Errors:** Ensure you populate `AWS_ACCESS_KEY` and `AWS_SECRET_KEY` variables securely within `processor_shared.py` (or load them via a `.env` file) to execute S3 queries in Apps 1 and 3.
+* **Missing Interactive Plots:** The interactive plotting relies on Plotly HTML generation. Ensure JavaScript is enabled in your web browser.
+
+---
+
+## 🤝 Contributing
+
+Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+---
+
+## 📄 License
+
+Distributed under the MIT License. See `LICENSE` for more information.
+
+---
+<div align="center">
+  <b>Built with Python & ❤️</b>
+</div>
