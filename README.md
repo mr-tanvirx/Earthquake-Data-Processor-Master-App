@@ -28,11 +28,15 @@ Provides a granular analysis tool for specific, pre-downloaded datasets.
 * **Batch Execution:** Queue multiple local station folders for sequential, automated processing.
 
 
-<img width="999" height="878" alt="Screenshot 2026-05-23 125429" src="https://github.com/user-attachments/assets/b2c1b2a1-2be1-4794-8419-781888a625e7" />
-<img width="1037" height="455" alt="Screenshot 2026-05-23 125446" src="https://github.com/user-attachments/assets/e65486c3-9f91-4dc9-8e8d-e9b430a33e6b" />
-<img width="1024" height="778" alt="Screenshot 2026-05-23 125502" src="https://github.com/user-attachments/assets/fc0a1506-329b-4e10-ab16-ea5f0c0c6d36" />
-<img width="1033" height="786" alt="Screenshot 2026-05-23 125511" src="https://github.com/user-attachments/assets/ca6d2287-9042-443d-ae8f-6b3fbbbd3458" />
-<img width="1867" height="881" alt="Screenshot 2026-05-23 125525" src="https://github.com/user-attachments/assets/4e491ba7-a198-4d85-9e61-8e8fcd6a2239" />
+<img width="999" height="878" alt="Screenshot 2026-05-23 125429" src="https://github.com/user-attachments/assets/e46b29bb-1862-4ec0-ad92-af71ddc3f551" />
+
+<img width="1037" height="320" alt="Screenshot 2026-05-23 125446" src="https://github.com/user-attachments/assets/f4da6d72-3947-4b3f-a0bd-ed38b146e5df" />
+
+<img width="1024" height="778" alt="Screenshot 2026-05-23 125502" src="https://github.com/user-attachments/assets/960d7a81-4bd3-4f4e-8722-43173bc047c3" />
+
+<img width="1033" height="737" alt="Screenshot 2026-05-23 125511" src="https://github.com/user-attachments/assets/0a8dab6b-f313-4daf-8dec-36063c3fb02c" />
+
+<img width="1867" height="881" alt="Screenshot 2026-05-23 125525" src="https://github.com/user-attachments/assets/8ce3d191-b24e-448d-8306-134af9e8f3e7" />
 
 *(Caption: Granular visualization settings and state management)*
 
@@ -43,8 +47,11 @@ A diagnostic tool that scans massive structural monitoring archives to visualize
 
 
 <img width="1020" height="821" alt="Screenshot 2026-05-23 125731" src="https://github.com/user-attachments/assets/9dd36621-fac6-47c6-af13-bd8e75ec15c6" />
-<img width="937" height="879" alt="Screenshot 2026-05-23 125750" src="https://github.com/user-attachments/assets/f40405fc-5d89-48ab-bd06-84f8523322f9" />
+
+<img width="937" height="724" alt="Screenshot 2026-05-23 125750" src="https://github.com/user-attachments/assets/a0526738-1687-4926-b7ef-4d4934a29261" />
+
 <img width="1526" height="815" alt="Screenshot 2026-05-23 130751" src="https://github.com/user-attachments/assets/2c2bdd9f-813a-48b6-a8f8-1fec9346498d" />
+
 <img width="1515" height="619" alt="Screenshot 2026-05-23 130736" src="https://github.com/user-attachments/assets/1e3220d3-b5da-446d-884f-a364cc8aa2b1" />
 
 *(Caption: Generated SVG calendar showing sensor uptime)*
@@ -64,11 +71,15 @@ An advanced graphing engine for cross-analyzing distinct seismic events or struc
 * **Data Manipulation:** Swap X and Y axes or multiply data by -1 to correct sensor misalignments on the fly.
 * **Comparative Spectrums:** Generate grouped response spectrum plots mapping multiple damping ratios across multiple structural profiles simultaneously.
 
-<img width="947" height="848" alt="Screenshot 2026-05-23 131059" src="https://github.com/user-attachments/assets/7badde58-787d-4e07-9910-be9e82c50d35" />
-<img width="845" height="441" alt="Screenshot 2026-05-23 131123" src="https://github.com/user-attachments/assets/bae072d5-6d3a-49c8-bbc5-7f774c59aa11" />
-<img width="856" height="773" alt="Screenshot 2026-05-23 131138" src="https://github.com/user-attachments/assets/5888d3df-0b25-40af-baf0-17d899467073" />
-<img width="986" height="676" alt="Screenshot 2026-05-23 131220" src="https://github.com/user-attachments/assets/ede23ae9-c285-47c3-a5e5-f837b4b4526f" />
-<img width="1254" height="906" alt="Screenshot 2026-05-23 131330" src="https://github.com/user-attachments/assets/9dd6cb83-8102-4b74-8232-4bfa0feea556" />
+
+
+<img width="947" height="848" alt="Screenshot 2026-05-23 131059" src="https://github.com/user-attachments/assets/361ff285-a8f8-4598-9215-1561362c72ff" />
+
+<img width="845" height="228" alt="Screenshot 2026-05-23 131123" src="https://github.com/user-attachments/assets/bf2c6100-a1e2-479f-a7a2-003aa5fd2ea8" />
+
+<img width="856" height="773" alt="Screenshot 2026-05-23 131138" src="https://github.com/user-attachments/assets/3c02a8f8-bc5d-4b39-8934-0f18ed2c1355" />
+
+<img width="1254" height="850" alt="Screenshot 2026-05-23 131330" src="https://github.com/user-attachments/assets/161b6957-c7c0-47d7-8265-ae268097789d" />
 
 *(Caption: Building a multi-profile comparative overlay)*
 
