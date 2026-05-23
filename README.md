@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://github.com/user-attachments/assets/94d9962e-baa6-4fd6-885d-14ee4b105193" alt="Project Banner" width="100%">
+ 
 
   # 🌍 Earthquake Data Processor Suite
   
@@ -18,6 +18,7 @@
 
 This repository contains a modular, web-based analytics dashboard engineered for civil and structural engineering researchers. Built on a robust Flask backend, it integrates local file processing with AWS S3 cloud archiving. The suite automates complex analytical pipelines including Fast Fourier Transform (FFT) filtering, numerical integration (acceleration to velocity/displacement), response spectrum generation, and multi-profile comparative analysis.
 
+<img src="https://github.com/user-attachments/assets/94d9962e-baa6-4fd6-885d-14ee4b105193" alt="Project Banner" width="100%">
 <p align="center">
   <img width="49%" alt="Compare Plot 1" src="https://github.com/user-attachments/assets/f9038e57-b77e-4e1e-bec9-c5ab8d8cf450" />
   <img width="49%" alt="Compare Plot 2" src="https://github.com/user-attachments/assets/66917bfd-71e8-4e85-9e4f-34fa2a4df051" />
