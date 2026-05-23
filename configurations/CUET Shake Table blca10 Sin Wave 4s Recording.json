@@ -1,0 +1,37 @@
+{
+    "app": "app2",
+    "target-dir": "G:\\\\.shortcut-targets-by-id\\\\1pgJ5082gz9FbZPAx8yB_s6yBrqH4WR0M\\\\Tahmeed_Sir\\\\BLCA Device Data Backup\\\\CUET Shake table test data\\\\Compare\\\\sin wave\\\\9",
+    "start-hh": "09",
+    "start-mm": "16",
+    "start-ss": "10",
+    "end-hh": "09",
+    "end-mm": "16",
+    "end-ss": "14",
+    "filters": [
+        [
+            0,
+            5
+        ],
+        [
+            0,
+            10
+        ],
+        [
+            0,
+            15
+        ]
+    ],
+    "dampings": [
+        0
+    ],
+    "draw-orig": "y",
+    "keep-csv": "n",
+    "sep-plots": "y",
+    "comp-plots": "y",
+    "resp-plots": "n",
+    "resp-ax-x": true,
+    "resp-ax-y": false,
+    "resp-ax-z": false,
+    "save-plots": "n",
+    "notes-comments": ""
+}
