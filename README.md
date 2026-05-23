@@ -82,13 +82,14 @@ An advanced graphing engine for cross-analyzing distinct seismic events or struc
 *(Caption: Building a multi-profile comparative overlay)*
 
 
+
+
+
+
 ### 6. Example of a 3-profile comparative overlay (App 5)
 <img width="3150" height="2187" alt="Compare_2026-05-23_11-52-49_Filt_0to20Hz_X" src="https://github.com/user-attachments/assets/faf20eb9-dd00-49dc-8983-8c267d31e918" />
 <img width="3150" height="2187" alt="Compare_2026-05-23_12-06-34_Resp_X" src="https://github.com/user-attachments/assets/18d2cabd-7ddb-41a9-8af0-b44366eff9ab" />
 
-
-
-*(Caption: Example of a 3-profile comparative overlay)*
 ---
 
 ## Technical Architecture
