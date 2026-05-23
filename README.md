@@ -58,8 +58,6 @@ A diagnostic tool that scans massive structural monitoring archives to visualize
 
 <img width="1020" height="821" alt="Screenshot 2026-05-23 125731" src="https://github.com/user-attachments/assets/9dd36621-fac6-47c6-af13-bd8e75ec15c6" />
 
-<img width="937" height="724" alt="Screenshot 2026-05-23 125750" src="https://github.com/user-attachments/assets/a0526738-1687-4926-b7ef-4d4934a29261" />
-
 <img width="1526" height="815" alt="Screenshot 2026-05-23 130751" src="https://github.com/user-attachments/assets/2c2bdd9f-813a-48b6-a8f8-1fec9346498d" />
 
 <img width="1515" height="619" alt="Screenshot 2026-05-23 130736" src="https://github.com/user-attachments/assets/1e3220d3-b5da-446d-884f-a364cc8aa2b1" />
