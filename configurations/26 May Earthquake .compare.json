@@ -1,0 +1,91 @@
+{
+    "app": "app5",
+    "output-dir": "",
+    "custom_title_base": "26 May Earthquake ",
+    "compare_configs": [
+        {
+            "name": "ETABS_5F Simulation",
+            "target_dir": "G:\\.shortcut-targets-by-id\\1pgJ5082gz9FbZPAx8yB_s6yBrqH4WR0M\\Tahmeed_Sir\\BLCA Device Data Backup\\May have EQ data\\2026-05-26_05-40-49\\26 may EQ etabs 5F Simulated\\etabs_26may_GFacc_to_5Facc_02percent damping with stiffness mod",
+            "start_hh": "05",
+            "start_mm": "42",
+            "start_ss": "8",
+            "end_hh": "05",
+            "end_mm": "42",
+            "end_ss": "19",
+            "invert": false,
+            "swap_xy": false
+        },
+        {
+            "name": "RS4D_5F",
+            "target_dir": "G:\\.shortcut-targets-by-id\\1pgJ5082gz9FbZPAx8yB_s6yBrqH4WR0M\\Tahmeed_Sir\\BLCA Device Data Backup\\May have EQ data\\2026-05-26_05-40-49\\rasberry_shake",
+            "start_hh": "05",
+            "start_mm": "42",
+            "start_ss": "7",
+            "end_hh": "05",
+            "end_mm": "42",
+            "end_ss": "18",
+            "invert": false,
+            "swap_xy": true
+        },
+        {
+            "name": "BLCA_5F",
+            "target_dir": "G:\\.shortcut-targets-by-id\\1pgJ5082gz9FbZPAx8yB_s6yBrqH4WR0M\\Tahmeed_Sir\\BLCA Device Data Backup\\May have EQ data\\2026-05-26_05-40-49\\blca5",
+            "start_hh": "05",
+            "start_mm": "42",
+            "start_ss": "7",
+            "end_hh": "05",
+            "end_mm": "42",
+            "end_ss": "18",
+            "invert": false,
+            "swap_xy": false
+        },
+        {
+            "name": "BLCA_GF",
+            "target_dir": "G:\\.shortcut-targets-by-id\\1pgJ5082gz9FbZPAx8yB_s6yBrqH4WR0M\\Tahmeed_Sir\\BLCA Device Data Backup\\May have EQ data\\2026-05-26_05-40-49\\blca3",
+            "start_hh": "05",
+            "start_mm": "42",
+            "start_ss": "7",
+            "end_hh": "05",
+            "end_mm": "42",
+            "end_ss": "18",
+            "invert": true,
+            "swap_xy": false
+        }
+    ],
+    "filters": [
+        [
+            0,
+            20
+        ]
+    ],
+    "dampings": [
+        0.02
+    ],
+    "draw-orig": "y",
+    "sep-plots": "y",
+    "comp-plots": "n",
+    "fft-plots": "y",
+    "fft-ax-x": true,
+    "fft-ax-y": true,
+    "fft-ax-z": true,
+    "resp-plots": "n",
+    "resp-ax-x": true,
+    "resp-ax-y": true,
+    "resp-ax-z": true,
+    "save-plots": "n",
+    "y-axis-unit": "m/s²",
+    "axis-font-size": "13",
+    "title-font-size": "13",
+    "updated_titles": {
+        "Compare_2026-06-05_12-02-34_Orig_X": "Comparison of EQ Event at 2026-05-26 at UTC:05:40:49 ETABS_5F Simulation (m/s²) vs RS4D_5F (m/s²) vs BLCA_5F (m/s²) vs BLCA_GF (m/s²) | Original Plot | Axis: X",
+        "Compare_2026-06-05_12-02-34_Orig_Y": "Comparison of EQ Event at 2026-05-26 at UTC:05:40:49 ETABS_5F Simulation (m/s²) vs RS4D_5F (m/s²) vs BLCA_5F (m/s²) vs BLCA_GF (m/s²) | Original Plot | Axis: Y",
+        "Compare_2026-06-05_12-02-34_Orig_Z": "Comparison of EQ Event at 2026-05-26 at UTC:05:40:49 ETABS_5F Simulation (m/s²) vs RS4D_5F (m/s²) vs BLCA_5F (m/s²) vs BLCA_GF (m/s²) | Original Plot | Axis: Z",
+        "Compare_2026-06-05_12-03-50_Orig_X": "Comparison of EQ Event at 2026-05-26 at UTC:05:40:49 ETABS_5F Simulation (m/s²) vs RS4D_5F (m/s²) vs BLCA_5F (m/s²) vs BLCA_GF (m/s²) | Original Plot | Axis: X",
+        "Compare_2026-06-05_12-04-08_Orig_X": "Comparison of EQ Event at 2026-05-26 at UTC:05:40:49",
+        "Compare_2026-06-05_12-24-02_Orig_X": "Comparison of EQ Event at 2026-05-26 at UTC:05:40:49 ETABS_5F Simulation (m/s²) vs RS4D_5F (m/s²) vs BLCA_5F (m/s²) vs BLCA_GF (m/s²) | Original Plot | Axis: X",
+        "Compare_2026-06-05_12-24-30_Orig_X": "Comparison of EQ Event at 2026-05-26 at UTC:05:40:49 ETABS_5F Simulation (m/s²) vs RS4D_5F (m/s²) vs BLCA_5F (m/s²) vs BLCA_GF (m/s²) | Original Plot | Axis: X",
+        "Compare_2026-06-05_12-24-46_Orig_X": "Comparison of EQ Event at 2026-05-26 at UTC:05:40:49 \r\nrecording at BLCA_GF vs BLCA_5F vs RS4D_5F vs ETABS_5F Simulation. X-axis",
+        "Compare_2026-06-05_12-24-46_Orig_Y": "Comparison of EQ Event at 2026-05-26 at UTC:05:40:49 \r\nrecording at BLCA_GF vs BLCA_5F vs RS4D_5F vs ETABS_5F Simulation. Y-axis",
+        "Compare_2026-06-05_12-24-46_Orig_Z": "Comparison of EQ Event at 2026-05-26 at UTC:05:40:49 \r\nrecording at BLCA_GF vs BLCA_5F vs RS4D_5F vs ETABS_5F Simulation. Z-axis"
+    }
+}

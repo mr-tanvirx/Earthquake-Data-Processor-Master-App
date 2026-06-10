@@ -1,0 +1,37 @@
+{
+    "app": "app2",
+    "target-dir": "G:\\.shortcut-targets-by-id\\1pgJ5082gz9FbZPAx8yB_s6yBrqH4WR0M\\Tahmeed_Sir\\BLCA Device Data Backup\\May have EQ data\\May have EQ\\might have eq\\2026-04-21_00-29-35\\blca3",
+    "start-hh": "00",
+    "start-mm": "30",
+    "start-ss": "50",
+    "end-hh": "00",
+    "end-mm": "31",
+    "end-ss": "50",
+    "filters": [
+        [
+            0,
+            10
+        ]
+    ],
+    "dampings": [
+        0
+    ],
+    "draw-orig": "y",
+    "keep-csv": "n",
+    "sep-plots": "y",
+    "comp-plots": "n",
+    "fft-plots": "n",
+    "fft-ax-x": true,
+    "fft-ax-y": true,
+    "fft-ax-z": true,
+    "resp-plots": "n",
+    "resp-ax-x": true,
+    "resp-ax-y": false,
+    "resp-ax-z": false,
+    "save-plots": "n",
+    "axis-font-size": "12",
+    "title-font-size": "13",
+    "custom_title_base": "4/21/2026 0:29:35 56 km ENE of Wāngjing, India M 5",
+    "updated_titles": {},
+    "notes-comments": ""
+}

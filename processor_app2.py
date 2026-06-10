@@ -1,8 +1,8 @@
-import json, gc
+import json, gc, os
 import pandas as pd
 from pathlib import Path
 import concurrent.futures
-from processor_shared import process_and_plot_segment
+from processor_shared import process_and_plot_segment, parse_factor
 
 class App2Processor:
     APP_ID = "app2"
@@ -27,6 +27,24 @@ class App2Processor:
             <div class="section-card" style="border: 2px solid #28a745;">
                 <div class="section-title">Local Direct Setup</div>
                 <div class="input-group"><label>Target Directory (Input & Output Area)</label><input type="text" id="a2-target-dir" placeholder="e.g., C:\\My_Direct_Folder"></div>
+                <div class="input-group" style="margin-top: 15px;"><label>Custom Plot Title Base (Optional)</label><input type="text" id="a2-custom-title" placeholder="e.g., Earthquake Event 1"></div>
+                
+                <div class="input-group" style="margin-top: 15px;">
+                    <label style="color: #007bff; font-weight: bold;">Change Plotting Unit?</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="a2_unit_toggle" class="change-unit" value="y" onchange="document.getElementById('a2_unit_params').style.display='block'"> Yes</label>
+                        <label><input type="radio" name="a2_unit_toggle" class="change-unit" value="n" checked onchange="document.getElementById('a2_unit_params').style.display='none'"> No</label>
+                    </div>
+                    <div id="a2_unit_params" style="display:none; margin-top: 10px; padding: 10px; background: var(--bg-color); border: 2px dashed #007bff; border-radius: 6px;">
+                        <div class="inline-inputs">
+                            <label style="display:inline; margin-right:5px;">Multiplying Factor:</label>
+                            <input type="text" id="a2-unit-factor" placeholder="e.g., 1/9.81" value="1/9.81" style="width: 120px; margin-right: 15px;">
+                            <label style="display:inline; margin-right:5px;">New Unit Name:</label>
+                            <input type="text" id="a2-unit-name" placeholder="e.g., g" value="g" style="width: 80px;">
+                        </div>
+                        <small style="display:block; margin-top:5px; color:#17a2b8;">Data columns will be factored and axis titles securely overwritten.</small>
+                    </div>
+                </div>
             </div>
             <div class="section-card">
                 <div class="section-title">Time Range Configuration</div>
@@ -64,8 +82,23 @@ class App2Processor:
                         <div class="radio-group"><label><input type="radio" name="a2_csv" class="keep-csv" value="y"> Y</label><label><input type="radio" name="a2_csv" class="keep-csv" value="n" checked> N</label></div>
                     </div>
                     <div class="input-group"><label>Draw Original Plot</label><div class="radio-group"><label><input type="radio" name="a2_orig" class="draw-orig" value="y" checked> Y</label><label><input type="radio" name="a2_orig" class="draw-orig" value="n"> N</label></div></div>
+                    <div class="input-group"><label>Mark Max & Min Values</label><div class="radio-group"><label><input type="radio" name="a2_extrema" class="mark-extrema" value="y"> Y</label><label><input type="radio" name="a2_extrema" class="mark-extrema" value="n" checked> N</label></div></div>
                     <div class="input-group"><label>Filtered Plots</label><div class="radio-group"><label><input type="radio" name="a2_sep" class="sep-plots" value="y" checked> Y</label><label><input type="radio" name="a2_sep" class="sep-plots" value="n"> N</label></div></div>
                     <div class="input-group"><label>Comparison Plots</label><div class="radio-group"><label><input type="radio" name="a2_comp" class="comp-plots" value="y" checked> Y</label><label><input type="radio" name="a2_comp" class="comp-plots" value="n"> N</label></div></div>
+                    
+                    <div class="input-group">
+                        <label>FFT Plots (Freq vs Amp)</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="a2_fft" class="fft-plots" value="y" onchange="document.getElementById('a2_fft_axes').style.display='block'"> Y</label>
+                            <label><input type="radio" name="a2_fft" class="fft-plots" value="n" checked onchange="document.getElementById('a2_fft_axes').style.display='none'"> N</label>
+                        </div>
+                        <div id="a2_fft_axes" style="display:none; margin-top: 10px; padding: 10px; background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 6px;">
+                            <label style="display:inline; margin-right: 10px;"><input type="checkbox" class="fft-ax-x" value="x" checked> X</label>
+                            <label style="display:inline; margin-right: 10px;"><input type="checkbox" class="fft-ax-y" value="y" checked> Y</label>
+                            <label style="display:inline;"><input type="checkbox" class="fft-ax-z" value="z" checked> Z</label>
+                        </div>
+                    </div>
+
                     <div class="input-group">
                         <label>Response Spectrum Plots</label>
                         <div class="radio-group">
@@ -78,8 +111,10 @@ class App2Processor:
                             <label style="display:inline;"><input type="checkbox" class="resp-ax-z" value="z"> Z</label>
                         </div>
                     </div>
+                    
                     <div class="input-group"><label>Save Automatically</label><div class="radio-group"><label><input type="radio" name="a2_save" class="save-plots" value="y"> Y</label><label><input type="radio" name="a2_save" class="save-plots" value="n" checked> N</label></div></div>
                     <div class="input-group"><label>Axis Title Font Size</label><input type="number" id="a2-axis-font" value="12"></div>
+                    <div class="input-group"><label>Main Title Font Size</label><input type="number" id="a2-title-font" value="13"></div>
                 </div>
             </div>
         </div>
@@ -103,18 +138,29 @@ class App2Processor:
                 "end-hh": document.getElementById('a2-eh').value,
                 "end-mm": document.getElementById('a2-em').value,
                 "end-ss": document.getElementById('a2-es').value,
+                "change-unit": pane.querySelector('.change-unit:checked')?.value || "n",
+                "unit-factor": document.getElementById('a2-unit-factor').value || "1/9.81",
+                "unit-name": document.getElementById('a2-unit-name').value || "g",
                 "filters": extractFiltersUI('a2-fc'),
                 "dampings": extractDampingsUI('a2-dc'),
                 "draw-orig": pane.querySelector('.draw-orig:checked')?.value || "y",
+                "mark-extrema": pane.querySelector('.mark-extrema:checked')?.value || "n",
                 "keep-csv": pane.querySelector('.keep-csv:checked')?.value || "n",
                 "sep-plots": pane.querySelector('.sep-plots:checked')?.value || "y",
                 "comp-plots": pane.querySelector('.comp-plots:checked')?.value || "y",
+                "fft-plots": pane.querySelector('.fft-plots:checked')?.value || "n",
+                "fft-ax-x": pane.querySelector('.fft-ax-x')?.checked || false,
+                "fft-ax-y": pane.querySelector('.fft-ax-y')?.checked || false,
+                "fft-ax-z": pane.querySelector('.fft-ax-z')?.checked || false,
                 "resp-plots": pane.querySelector('.resp-plots:checked')?.value || "y",
                 "resp-ax-x": pane.querySelector('.resp-ax-x')?.checked || false,
                 "resp-ax-y": pane.querySelector('.resp-ax-y')?.checked || false,
                 "resp-ax-z": pane.querySelector('.resp-ax-z')?.checked || false,
                 "save-plots": pane.querySelector('.save-plots:checked')?.value || "n",
                 "axis-font-size": document.getElementById('a2-axis-font').value || "12",
+                "title-font-size": document.getElementById('a2-title-font').value || "13",
+                "custom_title_base": document.getElementById('a2-custom-title').value || "",
+                "updated_titles": window._customTitles || {},
                 "notes-comments": ""
             };
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(config, null, 4));
@@ -146,6 +192,14 @@ class App2Processor:
                     document.getElementById('a2-em').value = conf['end-mm'] || conf.end_mm || "";
                     document.getElementById('a2-es').value = conf['end-ss'] || conf.end_ss || "";
                     document.getElementById('a2-axis-font').value = conf['axis-font-size'] || conf.axis_font_size || "12";
+                    document.getElementById('a2-title-font').value = conf['title-font-size'] || conf.title_font_size || "13";
+                    document.getElementById('a2-custom-title').value = conf['custom_title_base'] || "";
+                    document.getElementById('a2-unit-factor').value = conf['unit-factor'] || conf.unit_factor || "1/9.81";
+                    document.getElementById('a2-unit-name').value = conf['unit-name'] || conf.unit_name || "g";
+                    
+                    if(conf.updated_titles) {
+                        window._customTitles = Object.assign(window._customTitles || {}, conf.updated_titles);
+                    }
                     
                     const fc = document.getElementById('a2-fc');
                     fc.innerHTML = '';
@@ -173,16 +227,32 @@ class App2Processor:
                             if(r) r.checked = true;
                         }
                     };
+                    setRadio('change-unit', conf['change-unit'] || conf.change_unit);
                     setRadio('draw-orig', conf['draw-orig'] || conf.draw_orig);
+                    setRadio('mark-extrema', conf['mark-extrema'] || conf.mark_extrema);
                     setRadio('keep-csv', conf['keep-csv'] || conf.keep_csv);
                     setRadio('sep-plots', conf['sep-plots'] || conf.sep_plots);
                     setRadio('comp-plots', conf['comp-plots'] || conf.comp_plots);
+                    setRadio('fft-plots', conf['fft-plots'] || conf.fft_plots);
                     setRadio('resp-plots', conf['resp-plots'] || conf.resp_plots);
                     setRadio('save-plots', conf['save-plots'] || conf.save_plots);
                     
+                    if(conf['change-unit'] === 'y' || conf.change_unit === 'y' || conf.change_unit === true) {
+                        document.getElementById('a2_unit_params').style.display='block';
+                    } else {
+                        document.getElementById('a2_unit_params').style.display='none';
+                    }
+                    
+                    if(conf.hasOwnProperty('fft-ax-x')) pane.querySelector('.fft-ax-x').checked = conf['fft-ax-x'];
+                    if(conf.hasOwnProperty('fft-ax-y')) pane.querySelector('.fft-ax-y').checked = conf['fft-ax-y'];
+                    if(conf.hasOwnProperty('fft-ax-z')) pane.querySelector('.fft-ax-z').checked = conf['fft-ax-z'];
+
                     if(conf.hasOwnProperty('resp-ax-x')) pane.querySelector('.resp-ax-x').checked = conf['resp-ax-x'];
                     if(conf.hasOwnProperty('resp-ax-y')) pane.querySelector('.resp-ax-y').checked = conf['resp-ax-y'];
                     if(conf.hasOwnProperty('resp-ax-z')) pane.querySelector('.resp-ax-z').checked = conf['resp-ax-z'];
+
+                    if((conf['fft-plots'] === 'y' || conf.fft_plots === 'y')) document.getElementById('a2_fft_axes').style.display='block';
+                    else document.getElementById('a2_fft_axes').style.display='none';
 
                     if((conf['resp-plots'] === 'y' || conf.resp_plots === 'y')) document.getElementById('a2_resp_axes').style.display='block';
                     else document.getElementById('a2_resp_axes').style.display='none';
@@ -207,14 +277,22 @@ class App2Processor:
                 end_ss: document.getElementById('a2-es').value,
                 filters: extractFiltersUI('a2-fc'),
                 dampings: extractDampingsUI('a2-dc'),
+                custom_title_base: document.getElementById('a2-custom-title').value,
+                change_unit: pane.querySelector('.change-unit:checked')?.value === 'y',
+                unit_factor: document.getElementById('a2-unit-factor').value,
+                unit_name: document.getElementById('a2-unit-name').value,
                 draw_orig: pane.querySelector('.draw-orig:checked')?.value === 'y',
+                mark_extrema: pane.querySelector('.mark-extrema:checked')?.value === 'y',
                 keep_csv: pane.querySelector('.keep-csv:checked')?.value === 'y',
                 sep_plots: pane.querySelector('.sep-plots:checked')?.value === 'y',
                 comp_plots: pane.querySelector('.comp-plots:checked')?.value === 'y',
+                fft_plots: pane.querySelector('.fft-plots:checked')?.value === 'y',
+                fft_axes: ['x','y','z'].filter(ax => pane.querySelector('.fft-ax-'+ax)?.checked),
                 resp_plots: pane.querySelector('.resp-plots:checked')?.value === 'y',
                 resp_axes: ['x','y','z'].filter(ax => pane.querySelector('.resp-ax-'+ax)?.checked),
                 save_plots: pane.querySelector('.save-plots:checked')?.value === 'y',
-                axis_font_size: parseInt(document.getElementById('a2-axis-font').value || 12)
+                axis_font_size: parseInt(document.getElementById('a2-axis-font').value || 12),
+                title_font_size: parseInt(document.getElementById('a2-title-font').value || 13)
             };
             executeAppWorkflow('app2', payload);
         }
@@ -250,7 +328,8 @@ class App2Processor:
         self.state['total'] = len(tasks)
         self.state['progress'] = 0
         
-        with concurrent.futures.ThreadPoolExecutor(max_workers=16) as executor:
+        workers = max(1, (os.cpu_count() or 4) - 2)
+        with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
             futures = [executor.submit(self.process_task, stat, config) for stat in tasks]
             concurrent.futures.wait(futures)
 
@@ -294,6 +373,14 @@ class App2Processor:
                 base_date = df['timestamp_dt'].min().floor('D')
                 start_time_dt = base_date + pd.Timedelta(hours=int(config['start_hh']), minutes=int(config['start_mm']), seconds=float(config['start_ss']))
                 end_time_dt = base_date + pd.Timedelta(hours=int(config['end_hh']), minutes=int(config['end_mm']), seconds=float(config['end_ss']))
+                
+                # Handling Midnight Rollover / Day crossing
+                if (df['timestamp_dt'].min() - start_time_dt).total_seconds() > 12 * 3600:
+                    start_time_dt += pd.Timedelta(days=1)
+
+                if end_time_dt < start_time_dt:
+                    end_time_dt += pd.Timedelta(days=1)
+
                 mask = (df['timestamp_dt'] >= start_time_dt) & (df['timestamp_dt'] <= end_time_dt)
                 df_segment = df[mask].copy().sort_values('timestamp_dt')
                 event_str = base_date.strftime("%Y-%m-%d") + f"_{int(config['start_hh']):02d}-{int(config['start_mm']):02d}-{int(float(config['start_ss'])):02d}"
@@ -304,6 +391,13 @@ class App2Processor:
                 event_str = start_time_dt.strftime("%Y-%m-%d_%H-%M-%S")
             
             if not df_segment.empty:
+                if config.get('change_unit'):
+                    factor = parse_factor(config.get('unit_factor', '1.0'))
+                    df_segment['x'] *= factor
+                    df_segment['y'] *= factor
+                    df_segment['z'] *= factor
+                    self.log_msg(f"[{station}] Applied custom unit factor: {factor} ({config.get('unit_name', 'g')})")
+                    
                 process_and_plot_segment(df_segment, config, event_str, station, station_dir, start_time_dt, end_time_dt, self.log_msg)
             else:
                 self.log_msg(f"[{station}] Data found, but nothing existed inside the requested time window.")

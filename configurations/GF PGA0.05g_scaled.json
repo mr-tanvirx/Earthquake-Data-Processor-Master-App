@@ -1,0 +1,56 @@
+{
+    "app": "app2",
+    "target-dir": "G:\\.shortcut-targets-by-id\\1pgJ5082gz9FbZPAx8yB_s6yBrqH4WR0M\\Tahmeed_Sir\\BLCA Device Data Backup\\May have EQ data\\2026-05-26_05-40-49\\26 may EQ etabs 5F Simulated\\etabs_26may_GFacc_to_5Facc_02percent damping with stiffness mod\\PGA0.05g_scaled_gf",
+    "start-hh": "05",
+    "start-mm": "42",
+    "start-ss": "7",
+    "end-hh": "05",
+    "end-mm": "42",
+    "end-ss": "18",
+    "filters": [
+        [
+            0,
+            5
+        ],
+        [
+            0,
+            10
+        ],
+        [
+            0,
+            20
+        ]
+    ],
+    "dampings": [
+        0
+    ],
+    "draw-orig": "y",
+    "keep-csv": "n",
+    "sep-plots": "y",
+    "comp-plots": "n",
+    "fft-plots": "n",
+    "fft-ax-x": true,
+    "fft-ax-y": true,
+    "fft-ax-z": true,
+    "resp-plots": "n",
+    "resp-ax-x": true,
+    "resp-ax-y": false,
+    "resp-ax-z": false,
+    "save-plots": "n",
+    "axis-font-size": "12",
+    "title-font-size": "13",
+    "custom_title_base": "",
+    "updated_titles": {
+        "Compare_2026-06-05_12-02-34_Orig_X": "Comparison of EQ Event at 2026-05-26 at UTC:05:40:49 ETABS_5F Simulation (m/s²) vs RS4D_5F (m/s²) vs BLCA_5F (m/s²) vs BLCA_GF (m/s²) | Original Plot | Axis: X",
+        "Compare_2026-06-05_12-02-34_Orig_Y": "Comparison of EQ Event at 2026-05-26 at UTC:05:40:49 ETABS_5F Simulation (m/s²) vs RS4D_5F (m/s²) vs BLCA_5F (m/s²) vs BLCA_GF (m/s²) | Original Plot | Axis: Y",
+        "Compare_2026-06-05_12-02-34_Orig_Z": "Comparison of EQ Event at 2026-05-26 at UTC:05:40:49 ETABS_5F Simulation (m/s²) vs RS4D_5F (m/s²) vs BLCA_5F (m/s²) vs BLCA_GF (m/s²) | Original Plot | Axis: Z",
+        "Compare_2026-06-05_12-03-50_Orig_X": "Comparison of EQ Event at 2026-05-26 at UTC:05:40:49 ETABS_5F Simulation (m/s²) vs RS4D_5F (m/s²) vs BLCA_5F (m/s²) vs BLCA_GF (m/s²) | Original Plot | Axis: X",
+        "Compare_2026-06-05_12-04-08_Orig_X": "Comparison of EQ Event at 2026-05-26 at UTC:05:40:49",
+        "Compare_2026-06-05_12-24-02_Orig_X": "Comparison of EQ Event at 2026-05-26 at UTC:05:40:49 ETABS_5F Simulation (m/s²) vs RS4D_5F (m/s²) vs BLCA_5F (m/s²) vs BLCA_GF (m/s²) | Original Plot | Axis: X",
+        "Compare_2026-06-05_12-24-30_Orig_X": "Comparison of EQ Event at 2026-05-26 at UTC:05:40:49 ETABS_5F Simulation (m/s²) vs RS4D_5F (m/s²) vs BLCA_5F (m/s²) vs BLCA_GF (m/s²) | Original Plot | Axis: X",
+        "Compare_2026-06-05_12-24-46_Orig_X": "Comparison of EQ Event at 2026-05-26 at UTC:05:40:49 \r\nrecording at BLCA_GF vs BLCA_5F vs RS4D_5F vs ETABS_5F Simulation. X-axis",
+        "Compare_2026-06-05_12-24-46_Orig_Y": "Comparison of EQ Event at 2026-05-26 at UTC:05:40:49 \r\nrecording at BLCA_GF vs BLCA_5F vs RS4D_5F vs ETABS_5F Simulation. Y-axis",
+        "Compare_2026-06-05_12-24-46_Orig_Z": "Comparison of EQ Event at 2026-05-26 at UTC:05:40:49 \r\nrecording at BLCA_GF vs BLCA_5F vs RS4D_5F vs ETABS_5F Simulation. Z-axis"
+    },
+    "notes-comments": ""
+}

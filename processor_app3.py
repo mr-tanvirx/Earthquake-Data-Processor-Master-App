@@ -41,9 +41,18 @@ class App3Processor:
             }
             executeAppAction('app3', { action: action, local_dir: document.getElementById('app3-local-dir').value });
         }
-        function triggerApp3Render(suffixes) {
+        function triggerApp3Render(stations) {
+            let suffixDict = {};
+            if (stations && stations.length) {
+                stations.forEach(st => {
+                    let inputEl = document.getElementById('suffix-' + st);
+                    if (inputEl) {
+                        suffixDict[st] = inputEl.value;
+                    }
+                });
+            }
             document.getElementById('log-area').innerHTML = "> Generating SVG with suffixes...<br>";
-            executeAppAction('app3', { action: 'render_svg', suffixes: suffixes }, true);
+            executeAppAction('app3', { action: 'render_svg', suffixes: suffixDict }, true);
         }
         """
 

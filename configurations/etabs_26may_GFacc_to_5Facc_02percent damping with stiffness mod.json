@@ -1,0 +1,29 @@
+{
+    "app": "app2",
+    "target-dir": "G:\\OneDrive - BUET\\Tahmeed_Sir\\BLCA Device Data Backup\\May have EQ data\\2026-05-26_05-40-49\\26 may EQ etabs 5F Simulated\\etabs_26may_GFacc_to_5Facc_02percent damping with stiffness mod",
+    "start-hh": "05",
+    "start-mm": "42",
+    "start-ss": "8",
+    "end-hh": "05",
+    "end-mm": "42",
+    "end-ss": "19",
+    "filters": [],
+    "dampings": [
+        0
+    ],
+    "draw-orig": "y",
+    "keep-csv": "n",
+    "sep-plots": "y",
+    "comp-plots": "n",
+    "fft-plots": "n",
+    "fft-ax-x": true,
+    "fft-ax-y": true,
+    "fft-ax-z": true,
+    "resp-plots": "n",
+    "resp-ax-x": true,
+    "resp-ax-y": false,
+    "resp-ax-z": false,
+    "save-plots": "n",
+    "axis-font-size": "12",
+    "notes-comments": ""
+}

@@ -1,0 +1,41 @@
+{
+    "app": "app2",
+    "target-dir": "G:\\.shortcut-targets-by-id\\1pgJ5082gz9FbZPAx8yB_s6yBrqH4WR0M\\Tahmeed_Sir\\BLCA Device Data Backup\\May have EQ data\\might have eq\\2026-06-07_17-36-40\\RE038",
+    "start-hh": "17",
+    "start-mm": "38",
+    "start-ss": "00",
+    "end-hh": "17",
+    "end-mm": "40",
+    "end-ss": "00",
+    "filters": [
+        [
+            0,
+            10
+        ],
+        [
+            0,
+            20
+        ]
+    ],
+    "dampings": [
+        0
+    ],
+    "draw-orig": "y",
+    "keep-csv": "n",
+    "sep-plots": "y",
+    "comp-plots": "n",
+    "fft-plots": "n",
+    "fft-ax-x": true,
+    "fft-ax-y": true,
+    "fft-ax-z": true,
+    "resp-plots": "n",
+    "resp-ax-x": true,
+    "resp-ax-y": false,
+    "resp-ax-z": false,
+    "save-plots": "n",
+    "axis-font-size": "12",
+    "title-font-size": "13",
+    "custom_title_base": "07/06/2026 17:36:39 NNE of Thimphu, Bhutan M 5.6",
+    "updated_titles": {},
+    "notes-comments": ""
+}

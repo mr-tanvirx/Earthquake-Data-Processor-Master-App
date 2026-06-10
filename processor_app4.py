@@ -1,10 +1,11 @@
-import json
+import json, os, threading
 import pandas as pd
 from pathlib import Path
+import concurrent.futures
 
 class App4Processor:
     APP_ID = "app4"
-    APP_TITLE = "App 4: Parquet to CSV"
+    APP_TITLE = "App 4: Batch Converter (Parquet <-> CSV)"
 
     def __init__(self, log_queue):
         self.log_queue = log_queue
@@ -17,26 +18,27 @@ class App4Processor:
         return """
         <div class="grid-layout">
             <div class="section-card">
-                <div class="section-title">Parquet to CSV Batch Converter</div>
+                <div class="section-title">Parquet <-> CSV Batch Converter</div>
                 <div class="input-group">
-                    <label>Input Directory (Contains .parquet files)</label>
-                    <input type="text" id="app4-input-dir" placeholder="e.g., C:\\My_Parquets">
+                    <label>Input Directory (Location of files to convert)</label>
+                    <input type="text" id="app4-input-dir" placeholder="e.g., C:\\My_Data">
                 </div>
                 <div class="input-group">
-                    <label>Output Directory (For .csv files)</label>
-                    <input type="text" id="app4-output-dir" placeholder="e.g., C:\\My_CSVs">
+                    <label>Output Directory (Where to save converted files)</label>
+                    <input type="text" id="app4-output-dir" placeholder="e.g., C:\\My_Converted_Data">
                     <small>Directory structure is maintained automatically.</small>
                 </div>
-                <button class="btn-large init-btn" onclick="run_app4()">Convert All Parquets to CSV</button>
+                <button class="btn-large init-btn" onclick="run_app4('p2c')" style="margin-bottom: 10px;">Convert Parquets TO CSV</button>
+                <button class="btn-large init-btn" onclick="run_app4('c2p')" style="background-color: #17a2b8;">Convert CSVs TO Parquet</button>
             </div>
         </div>
         """
 
     def get_js_funcs(self):
         return """
-        function run_app4() {
+        function run_app4(direction) {
             const payload = {
-                action: 'convert',
+                action: direction,
                 input_dir: document.getElementById('app4-input-dir').value,
                 output_dir: document.getElementById('app4-output-dir').value
             };
@@ -65,30 +67,56 @@ class App4Processor:
             return
 
         out_path.mkdir(parents=True, exist_ok=True)
-        files = list(in_path.rglob("*.parquet"))
         
-        if not files:
-            self.log_msg("No parquet files found in the input directory.")
+        if action == 'p2c':
+            files = list(in_path.rglob("*.parquet"))
+            ext_target = '.csv'
+            self.log_msg(f"Discovered {len(files)} PARQUET files. Beginning multi-threaded conversion to CSV...")
+        elif action == 'c2p':
+            files = list(in_path.rglob("*.csv"))
+            ext_target = '.parquet'
+            self.log_msg(f"Discovered {len(files)} CSV files. Beginning multi-threaded conversion to PARQUET...")
+        else:
+            self.log_msg("Error: Invalid action passed.")
             self.log_msg(json.dumps({"done": True, "has_more": False}))
             self.state['is_running'] = False
             return
 
-        self.log_msg(f"Discovered {len(files)} parquet files. Beginning conversion...")
+        if not files:
+            self.log_msg(f"No corresponding files found in the input directory to convert.")
+            self.log_msg(json.dumps({"done": True, "has_more": False}))
+            self.state['is_running'] = False
+            return
         
-        for idx, file in enumerate(files):
+        lock = threading.Lock()
+        self.state['progress'] = 0
+        self.state['total'] = len(files)
+        workers = max(1, (os.cpu_count() or 4) - 2)
+
+        def convert_task(file):
             try:
                 rel_path = file.relative_to(in_path)
-                dest_csv = out_path / rel_path.with_suffix('.csv')
-                dest_csv.parent.mkdir(parents=True, exist_ok=True)
+                dest = out_path / rel_path.with_suffix(ext_target)
+                dest.parent.mkdir(parents=True, exist_ok=True)
                 
-                df = pd.read_parquet(file)
-                df.to_csv(dest_csv, index=False)
+                if action == 'p2c':
+                    df = pd.read_parquet(file)
+                    df.to_csv(dest, index=False)
+                elif action == 'c2p':
+                    df = pd.read_csv(file, sep=None, engine='python', on_bad_lines='skip')
+                    df.to_parquet(dest, index=False)
                 
-                progress = idx + 1
-                self.log_msg(json.dumps({"log": f"Converted: {file.name}", "progress": progress, "total": len(files)}))
+                with lock:
+                    self.state['progress'] += 1
+                    prog = self.state['progress']
+                
+                self.log_msg(json.dumps({"log": f"Converted: {file.name} -> {dest.name}", "progress": prog, "total": len(files)}))
             except Exception as e:
                 self.log_msg(f"Error converting {file.name}: {e}")
 
-        self.log_msg(f"Conversion complete. All CSVs saved to {output_dir}")
+        with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
+            executor.map(convert_task, files)
+
+        self.log_msg(f"Conversion complete. All files saved to {output_dir}")
         self.log_msg(json.dumps({"done": True, "has_more": False, "progress": len(files), "total": len(files)}))
         self.state['is_running'] = False

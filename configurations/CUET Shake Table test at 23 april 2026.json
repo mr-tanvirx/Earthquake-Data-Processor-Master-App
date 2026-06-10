@@ -1,0 +1,68 @@
+{
+    "app": "app5",
+    "output-dir": "",
+    "custom_title_base": "CUET Shake Table test at 23 april 2026",
+    "compare_configs": [
+        {
+            "name": "BLCA6",
+            "target_dir": "G:\\\\.shortcut-targets-by-id\\\\1pgJ5082gz9FbZPAx8yB_s6yBrqH4WR0M\\\\Tahmeed_Sir\\\\BLCA Device Data Backup\\\\CUET Shake table test data\\\\Compare\\\\rp6\\\\10",
+            "start_hh": "10",
+            "start_mm": "07",
+            "start_ss": "12.55",
+            "end_hh": "10",
+            "end_mm": "07",
+            "end_ss": "29",
+            "invert": false,
+            "swap_xy": false
+        },
+        {
+            "name": "BLCA10",
+            "target_dir": "G:\\\\.shortcut-targets-by-id\\\\1pgJ5082gz9FbZPAx8yB_s6yBrqH4WR0M\\\\Tahmeed_Sir\\\\BLCA Device Data Backup\\\\CUET Shake table test data\\\\Compare\\\\rp10\\\\8",
+            "start_hh": "08",
+            "start_mm": "18",
+            "start_ss": "38.9",
+            "end_hh": "08",
+            "end_mm": "18",
+            "end_ss": "55",
+            "invert": false,
+            "swap_xy": false
+        },
+        {
+            "name": "Original motion",
+            "target_dir": "G:\\\\.shortcut-targets-by-id\\\\1pgJ5082gz9FbZPAx8yB_s6yBrqH4WR0M\\\\Tahmeed_Sir\\\\BLCA Device Data Backup\\\\CUET Shake table test data\\\\Original",
+            "start_hh": "09",
+            "start_mm": "59",
+            "start_ss": "48",
+            "end_hh": "10",
+            "end_mm": "00",
+            "end_ss": "04",
+            "invert": true,
+            "swap_xy": false
+        }
+    ],
+    "filters": [
+        [
+            0,
+            20
+        ]
+    ],
+    "dampings": [
+        0
+    ],
+    "draw-orig": "y",
+    "sep-plots": "y",
+    "comp-plots": "n",
+    "fft-plots": "y",
+    "fft-ax-x": true,
+    "fft-ax-y": true,
+    "fft-ax-z": true,
+    "resp-plots": "n",
+    "resp-ax-x": true,
+    "resp-ax-y": false,
+    "resp-ax-z": false,
+    "save-plots": "n",
+    "y-axis-unit": "m/s²",
+    "axis-font-size": "12",
+    "title-font-size": "13",
+    "updated_titles": {}
+}

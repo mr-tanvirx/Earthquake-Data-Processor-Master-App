@@ -1,0 +1,42 @@
+{
+    "app": "app2",
+    "target-dir": "G:\\OneDrive - BUET\\Tahmeed_Sir\\BLCA Device Data Backup\\May have EQ data\\2026-05-26_05-40-49\\rasberry_shake",
+    "start-hh": "05",
+    "start-mm": "42",
+    "start-ss": "7",
+    "end-hh": "05",
+    "end-mm": "42",
+    "end-ss": "18",
+    "filters": [
+        [
+            0,
+            5
+        ],
+        [
+            0,
+            10
+        ],
+        [
+            0,
+            20
+        ]
+    ],
+    "dampings": [
+        0
+    ],
+    "draw-orig": "y",
+    "keep-csv": "n",
+    "sep-plots": "y",
+    "comp-plots": "n",
+    "fft-plots": "n",
+    "fft-ax-x": true,
+    "fft-ax-y": true,
+    "fft-ax-z": true,
+    "resp-plots": "n",
+    "resp-ax-x": true,
+    "resp-ax-y": false,
+    "resp-ax-z": false,
+    "save-plots": "n",
+    "axis-font-size": "12",
+    "notes-comments": ""
+}

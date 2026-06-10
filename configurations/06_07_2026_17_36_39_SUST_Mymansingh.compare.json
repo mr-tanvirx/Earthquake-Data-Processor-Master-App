@@ -1,0 +1,60 @@
+{
+    "app": "app5",
+    "output-dir": "",
+    "custom_title_base": "07/06/2026 17:36:39 NNE of Thimphu, Bhutan M 5.6",
+    "compare_configs": [
+        {
+            "name": "SUST",
+            "target_dir": "G:\\.shortcut-targets-by-id\\1pgJ5082gz9FbZPAx8yB_s6yBrqH4WR0M\\Tahmeed_Sir\\BLCA Device Data Backup\\May have EQ data\\might have eq\\2026-06-07_17-36-40\\blca4",
+            "start_hh": "17",
+            "start_mm": "37",
+            "start_ss": "10",
+            "end_hh": "17",
+            "end_mm": "40",
+            "end_ss": "10",
+            "invert": false,
+            "swap_xy": false
+        },
+        {
+            "name": "Mymensingh",
+            "target_dir": "G:\\.shortcut-targets-by-id\\1pgJ5082gz9FbZPAx8yB_s6yBrqH4WR0M\\Tahmeed_Sir\\BLCA Device Data Backup\\May have EQ data\\might have eq\\2026-06-07_17-36-40\\blca7",
+            "start_hh": "17",
+            "start_mm": "37",
+            "start_ss": "1",
+            "end_hh": "17",
+            "end_mm": "40",
+            "end_ss": "1",
+            "invert": false,
+            "swap_xy": false
+        }
+    ],
+    "filters": [
+        [
+            0,
+            8
+        ],
+        [
+            0,
+            20
+        ]
+    ],
+    "dampings": [
+        0
+    ],
+    "draw-orig": "n",
+    "sep-plots": "y",
+    "comp-plots": "n",
+    "fft-plots": "n",
+    "fft-ax-x": true,
+    "fft-ax-y": true,
+    "fft-ax-z": true,
+    "resp-plots": "n",
+    "resp-ax-x": true,
+    "resp-ax-y": false,
+    "resp-ax-z": false,
+    "save-plots": "n",
+    "y-axis-unit": "m/s²",
+    "axis-font-size": "12",
+    "title-font-size": "14",
+    "updated_titles": {}
+}

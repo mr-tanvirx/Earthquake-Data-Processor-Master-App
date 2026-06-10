@@ -1,0 +1,37 @@
+{
+    "app": "app2",
+    "target-dir": "G:\\.shortcut-targets-by-id\\1pgJ5082gz9FbZPAx8yB_s6yBrqH4WR0M\\Tahmeed_Sir\\BLCA Device Data Backup\\May have EQ data\\May have EQ\\might have eq\\2025-11-27_10-15-17\\blca5 BUET 5F",
+    "start-hh": "10",
+    "start-mm": "15",
+    "start-ss": "10",
+    "end-hh": "10",
+    "end-mm": "16",
+    "end-ss": "10",
+    "filters": [
+        [
+            0,
+            10
+        ]
+    ],
+    "dampings": [
+        0
+    ],
+    "draw-orig": "n",
+    "keep-csv": "n",
+    "sep-plots": "y",
+    "comp-plots": "n",
+    "fft-plots": "n",
+    "fft-ax-x": true,
+    "fft-ax-y": true,
+    "fft-ax-z": true,
+    "resp-plots": "n",
+    "resp-ax-x": true,
+    "resp-ax-y": false,
+    "resp-ax-z": false,
+    "save-plots": "n",
+    "axis-font-size": "12",
+    "title-font-size": "13",
+    "custom_title_base": "11/27/2025 10:15:17  16 km ENE of Tungi, Bangladesh M 4.1",
+    "updated_titles": {},
+    "notes-comments": ""
+}

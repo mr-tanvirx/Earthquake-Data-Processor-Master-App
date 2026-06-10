@@ -1,0 +1,37 @@
+{
+    "app": "app2",
+    "target-dir": "G:\\.shortcut-targets-by-id\\1pgJ5082gz9FbZPAx8yB_s6yBrqH4WR0M\\Tahmeed_Sir\\BLCA Device Data Backup\\May have EQ data\\May have EQ\\might have eq\\2025-12-04_00-14-40\\blca8 Narsinghdi",
+    "start-hh": "00",
+    "start-mm": "14",
+    "start-ss": "40.0",
+    "end-hh": "00",
+    "end-mm": "15",
+    "end-ss": "40.0",
+    "filters": [
+        [
+            0,
+            5
+        ]
+    ],
+    "dampings": [
+        0
+    ],
+    "draw-orig": "y",
+    "keep-csv": "n",
+    "sep-plots": "y",
+    "comp-plots": "y",
+    "fft-plots": "n",
+    "fft-ax-x": true,
+    "fft-ax-y": true,
+    "fft-ax-z": true,
+    "resp-plots": "n",
+    "resp-ax-x": true,
+    "resp-ax-y": false,
+    "resp-ax-z": false,
+    "save-plots": "n",
+    "axis-font-size": "12",
+    "title-font-size": "13",
+    "custom_title_base": "12/4/2025 00:14:40 2 km ENE of Dhaka, Bangladesh M 4.1",
+    "updated_titles": {},
+    "notes-comments": ""
+}

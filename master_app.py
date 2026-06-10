@@ -1,4 +1,4 @@
-import os, sys, importlib, inspect, threading, queue, json, webbrowser, shutil
+import os, sys, importlib, inspect, threading, queue, json, webbrowser, shutil, socket
 from pathlib import Path
 from flask import Flask, request, jsonify, Response, render_template_string, send_from_directory
 
@@ -42,7 +42,7 @@ HTML_TEMPLATE = f"""
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Master Earthquake Processor Suite</title>
+    <title>Earthquake data process app by mr-tanvirx</title>
     <style>
         :root {{ --bg-color: #f4f6f9; --text-color: #333; --header-bg: #2c3e50; --card-bg: white; --border-color: #ced4da; --tab-bg: #e9ecef; --tab-hover: #d3d9df; --input-bg: white; --input-text: #333; --station-header: #e9ecef; --log-bg: #1e1e1e; --duration-bg: #e2e3e5; --duration-text: #383d41; }}
         body.dark-mode {{ --bg-color: #121212; --text-color: #e0e0e0; --header-bg: #000000; --card-bg: #1e1e1e; --border-color: #333333; --tab-bg: #2c2c2c; --tab-hover: #3d3d3d; --input-bg: #2c2c2c; --input-text: #e0e0e0; --station-header: #2c2c2c; --log-bg: #000000; --duration-bg: #2c2c2c; --duration-text: #ffc107; }}
@@ -103,7 +103,7 @@ HTML_TEMPLATE = f"""
 </head>
 <body>
     <div class="header">
-        Earthquake Data Processor Suite
+        Earthquake data process app by <a href="https://github.com/mr-tanvirx" target="_blank" style="color: #4da3ff; text-decoration: none;">mr-tanvirx</a>
         <button class="theme-toggle-btn" onclick="toggleTheme()">Toggle Dark Mode</button>
     </div>
     <div class="container">
@@ -137,6 +137,7 @@ HTML_TEMPLATE = f"""
         let currentApp = '{sorted_apps[0][0] if sorted_apps else ""}';
         let evtSource = null;
         let currentStretchScale = 100;
+        window._customTitles = window._customTitles || {{}}; // Global store for user-edited titles
 
         function toggleTheme() {{
             document.body.classList.toggle('dark-mode');
@@ -196,9 +197,13 @@ HTML_TEMPLATE = f"""
             const sh = parseFloat(document.getElementById(sh_id)?.value || 0), sm = parseFloat(document.getElementById(sm_id)?.value || 0), ss = parseFloat(document.getElementById(ss_id)?.value || 0);
             const eh = parseFloat(document.getElementById(eh_id)?.value || 0), em = parseFloat(document.getElementById(em_id)?.value || 0), es = parseFloat(document.getElementById(es_id)?.value || 0);
             if(document.getElementById(sh_id).value === "") {{ document.getElementById(out_id).innerText = "Duration: Auto (Full Segment)"; return; }}
-            const diff = (eh * 3600 + em * 60 + es) - (sh * 3600 + sm * 60 + ss);
+            let diff = (eh * 3600 + em * 60 + es) - (sh * 3600 + sm * 60 + ss);
+            
+            // Fix for midnight crossover duration calculation
+            if (diff < 0) diff += 86400; 
+            
             const displayDiff = Number.isInteger(diff) ? diff : diff.toFixed(3);
-            document.getElementById(out_id).innerText = diff >= 0 ? `Duration: ${{displayDiff}} seconds` : `Duration: Invalid (Negative)`;
+            document.getElementById(out_id).innerText = `Duration: ${{displayDiff}} seconds`;
         }}
 
         async function executeAppWorkflow(appId, payload) {{
@@ -206,6 +211,9 @@ HTML_TEMPLATE = f"""
             document.getElementById('svg-output').innerHTML = "";
             document.getElementById('progress-bar').style.width = "0%";
             document.getElementById('pagination-controls').style.display = 'none';
+            // Inject dynamically saved titles into payload automatically
+            payload.updated_titles = window._customTitles;
+            
             const initBtn = document.getElementById('tab-' + appId).querySelector('.init-btn');
             if(initBtn) initBtn.disabled = true;
             try {{
@@ -260,18 +268,57 @@ HTML_TEMPLATE = f"""
                     
                     const wrapper = document.createElement('div');
                     wrapper.className = 'svg-wrapper';
-                    wrapper.innerHTML = `<div>${{data.svg}}</div><div style="margin-top:15px;"><button class="btn-save">Save Image</button><button class="btn-stretch" style="margin-left:15px;background:#17a2b8;color:#fff;border:none;padding:10px 15px;border-radius:6px;font-weight:bold;cursor:pointer;">Stretch / Zoom Plot</button></div>`;
+                    
+                    wrapper.innerHTML = `<div>${{data.svg}}</div>
+                    <div style="margin-top:15px; padding-bottom:15px; border-bottom:1px solid #ddd;">
+                        <button class="btn-save">Save Image</button>
+                        <button class="btn-edit-title" style="margin-left:15px;background:#6f42c1;color:#fff;border:none;padding:10px 15px;border-radius:6px;font-weight:bold;cursor:pointer;">✎ Edit Title</button>
+                        <button class="btn-stretch" style="margin-left:15px;background:#17a2b8;color:#fff;border:none;padding:10px 15px;border-radius:6px;font-weight:bold;cursor:pointer;">Stretch / Zoom Plot</button>
+                    </div>`;
                     
                     wrapper.querySelector('.btn-save').onclick = () => {{ const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([data.svg], {{ type: 'image/svg+xml' }})); a.download = (data.file_name || 'plot').replace(/[^a-zA-Z0-9_-]/g, '_') + '.svg'; a.click(); }};
                     
+                    wrapper.querySelector('.btn-edit-title').onclick = () => {{
+                        const oldTitle = data.title;
+                        const newTitle = prompt("Update Plot Title:", oldTitle);
+                        if (newTitle !== null && newTitle.trim() !== "") {{
+                            const finalTitle = newTitle.trim();
+                            // Save globally so configs can capture it
+                            window._customTitles[data.file_name] = finalTitle;
+                            
+                            // Smart Update: Python textwrap splits titles into fragments.
+                            // We find all text nodes that look like parts of the title, 
+                            // replace the first one with the complete new title, and blank out the rest!
+                            const svgTextEls = Array.from(wrapper.querySelectorAll('svg text'));
+                            let replaced = false;
+                            
+                            svgTextEls.forEach(el => {{
+                                const txt = el.textContent.trim();
+                                if (txt.length >= 3 && oldTitle.includes(txt)) {{
+                                    // Matplotlib titles are always drawn near the top (y-coordinate < 80)
+                                    const yAttr = parseFloat(el.getAttribute('y') || '1000');
+                                    if (yAttr < 80) {{
+                                        if (!replaced) {{
+                                            el.textContent = finalTitle; // Inject full updated title
+                                            replaced = true;
+                                        }} else {{
+                                            el.textContent = ""; // Blank out leftover lines from the old wrapped title
+                                        }}
+                                    }}
+                                }}
+                            }});
+                            data.title = finalTitle; // update locally
+                        }}
+                    }};
+
                     wrapper.querySelector('.btn-stretch').onclick = () => {{
-                        if (data.html_url) {{
+                        if (data.html_url && data.html_url !== "") {{
                             document.getElementById('modal-title').innerText = data.title;
                             document.getElementById('modal-svg-wrapper').innerHTML = `<iframe src="${{data.html_url}}" style="width:100%; height:100%; min-height:85vh; border:none; background:white; display:block;"></iframe>`;
                             document.getElementById('zoom-in-btn').style.display = 'none';
                             document.getElementById('zoom-out-btn').style.display = 'none';
                             document.getElementById('zoom-level-indicator').style.display = 'none';
-                            document.getElementById('stretch-modal').style.display = 'block';
+                            document.getElementById('stretch-modal').style.display = 'flex'; // Fix: flex preserves sizing layout instead of block
                         }} else {{
                             currentStretchScale = 100;
                             document.getElementById('modal-title').innerText = data.title;
@@ -280,7 +327,7 @@ HTML_TEMPLATE = f"""
                             document.getElementById('zoom-out-btn').style.display = 'inline-block';
                             document.getElementById('zoom-level-indicator').style.display = 'inline-block';
                             document.getElementById('zoom-level-indicator').innerText = '100%';
-                            document.getElementById('stretch-modal').style.display = 'block';
+                            document.getElementById('stretch-modal').style.display = 'flex'; // Fix: flex preserves sizing layout
                         }}
                     }};
                     document.getElementById(stId + '-plots').appendChild(wrapper);
@@ -365,5 +412,15 @@ def stream():
     return Response(event_stream(), mimetype="text/event-stream")
 
 if __name__ == '__main__':
-    webbrowser.open_new("http://localhost:5000")
-    app.run(port=5000, threaded=True)
+    def get_free_port(start_port=5000):
+        port = start_port
+        while True:
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                if s.connect_ex(('127.0.0.1', port)) != 0:
+                    return port
+            port += 1
+            
+    available_port = get_free_port(5000)
+    print(f"Starting server on port {available_port}...")
+    webbrowser.open_new(f"http://localhost:{available_port}")
+    app.run(port=available_port, threaded=True)

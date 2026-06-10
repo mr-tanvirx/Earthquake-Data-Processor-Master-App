@@ -1,0 +1,42 @@
+{
+    "app": "app2",
+    "target-dir": "G:\\.shortcut-targets-by-id\\1pgJ5082gz9FbZPAx8yB_s6yBrqH4WR0M\\Tahmeed_Sir\\BLCA Device Data Backup\\Data archive\\blca8 Mohammodpur\\archive\\2025\\11\\21",
+    "start-hh": "04",
+    "start-mm": "38",
+    "start-ss": "30",
+    "end-hh": "04",
+    "end-mm": "39",
+    "end-ss": "30",
+    "filters": [
+        [
+            0,
+            15
+        ],
+        [
+            0,
+            20
+        ],
+        [
+            0,
+            25
+        ]
+    ],
+    "dampings": [
+        0
+    ],
+    "draw-orig": "y",
+    "keep-csv": "n",
+    "sep-plots": "y",
+    "comp-plots": "y",
+    "fft-plots": "y",
+    "fft-ax-x": true,
+    "fft-ax-y": true,
+    "fft-ax-z": true,
+    "resp-plots": "y",
+    "resp-ax-x": true,
+    "resp-ax-y": true,
+    "resp-ax-z": true,
+    "save-plots": "n",
+    "axis-font-size": "12",
+    "notes-comments": ""
+}

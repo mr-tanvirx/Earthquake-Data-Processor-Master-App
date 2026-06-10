@@ -1,4 +1,6 @@
-import json, gc, shutil
+import json, gc, shutil, os, time
+import urllib.request
+import urllib.error
 import pandas as pd
 from pathlib import Path
 import boto3
@@ -24,21 +26,52 @@ class App1Processor:
                 <div class="input-group"><label>Check S3 Cloud Archive?</label>
                     <div class="radio-group"><label><input type="radio" name="a1_s3" class="check-s3" value="y" checked> Yes</label><label><input type="radio" name="a1_s3" class="check-s3" value="n"> No</label></div>
                 </div>
+                
+                <div class="input-group" style="margin-top: 15px;">
+                    <label style="color: #6f42c1; font-weight: bold;">Check Raspberry Shake Data?</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="a1_rs" class="check-rs" value="y" onchange="document.getElementById('a1_rs_params').style.display='block'"> Yes</label>
+                        <label><input type="radio" name="a1_rs" class="check-rs" value="n" checked onchange="document.getElementById('a1_rs_params').style.display='none'"> No</label>
+                    </div>
+                    <div id="a1_rs_params" style="display:none; margin-top: 10px; padding: 10px; background: var(--bg-color); border: 2px dashed #6f42c1; border-radius: 6px;">
+                        <div class="inline-inputs" style="margin-bottom:8px;">
+                            <input type="text" id="rs-net" placeholder="Network" value="AM" style="width: 70px;">
+                            <input type="text" id="rs-sta" placeholder="Station ID" value="RE038" style="width: 100px;">
+                            <input type="text" id="rs-loc" placeholder="Location" value="00" style="width: 70px;">
+                            <input type="text" id="rs-cha" placeholder="Channels" value="EHZ,ENZ,ENE,ENN" style="width: 140px;">
+                        </div>
+                        <small>Target: Output Directory -> FDSNWS Server miniSEED downloads.</small>
+                    </div>
+                </div>
             </div>
             <div class="section-card" style="border: 2px dashed #007bff;">
-                <div class="section-title">Custom Folder Overrides</div>
+                <div class="section-title">Custom Folder Overrides & Saving</div>
                 <div class="input-group"><label>Custom Root Directory</label><input type="text" class="custom-dir" id="a1-custom-dir" placeholder="e.g., C:\\My_Custom_EQ_Data"></div>
                 <div class="input-group"><label>Output Directory</label><input type="text" class="output-dir" id="a1-out-dir" placeholder="e.g., C:\\Downloads\\Output"></div>
+                
+                <h4 style="margin: 10px 0 5px 0; font-size: 1em; color: #17a2b8;">Generate App 2 Configurations per EQ?</h4>
+                <div class="input-group">
+                    <div class="radio-group"><label><input type="radio" name="a1_gen_conf" class="gen-app2-conf" value="y" checked> Yes</label><label><input type="radio" name="a1_gen_conf" class="gen-app2-conf" value="n"> No</label></div>
+                </div>
+                <div class="input-group"><label>Config Save Directory</label><input type="text" class="conf-out-dir" id="a1-conf-out-dir" placeholder="e.g., C:\\EQ_Configs"></div>
             </div>
         </div>
         <div class="grid-layout">
             <div class="section-card">
                 <div class="section-title">Event Parameters</div>
-                <div class="input-group"><label>Recent Earthquakes (M/D/YYYY HH:MM:SS)</label><textarea class="eq-text" id="a1-eq-text" rows="4">5/5/2026 4:10:49</textarea></div>
+                <div class="input-group">
+                    <label>Recent Earthquakes (M/D/YYYY HH:MM:SS)</label>
+                    <textarea class="eq-text" id="a1-eq-text" rows="5">5/26/2026 5:40:49
+5/26/2026 14:07:51
+5/26/2026 16:30:57
+5/29/2026 12:22:54
+6/4/2026 15:39:26</textarea>
+                </div>
                 <div class="input-group">
                     <label>Time Window</label>
                     <div class="inline-inputs"><span>Plot</span><input type="number" class="time-before" id="a1-tb" value="10" oninput="calcDurA1()"><span>s behind to</span><input type="number" class="time-after" id="a1-ta" value="90" oninput="calcDurA1()"><span>s after.</span></div>
                     <div class="duration-box" id="a1-duration">Duration: 100 seconds</div>
+                    <small style="display:block; margin-top:5px; color:#6f42c1;">* If Raspberry Shake FDSN is checked, the entire containing hour will be downloaded automatically.</small>
                 </div>
             </div>
             <div class="section-card">
@@ -57,6 +90,7 @@ class App1Processor:
                 <div class="input-group"><label>Events Per Page</label><input type="number" class="events-per-page" id="a1-epp" value="5"></div>
                 <div class="input-group"><label>Keep ALL Data as CSVs</label><div class="radio-group"><label><input type="radio" name="a1_csv" class="keep-csv" value="y"> Y</label><label><input type="radio" name="a1_csv" class="keep-csv" value="n" checked> N</label></div></div>
                 <div class="input-group"><label>Draw Original Plot</label><div class="radio-group"><label><input type="radio" name="a1_orig" class="draw-orig" value="y" checked> Y</label><label><input type="radio" name="a1_orig" class="draw-orig" value="n"> N</label></div></div>
+                <div class="input-group"><label>Mark Max & Min Values</label><div class="radio-group"><label><input type="radio" name="a1_extrema" class="mark-extrema" value="y"> Y</label><label><input type="radio" name="a1_extrema" class="mark-extrema" value="n" checked> N</label></div></div>
                 <div class="input-group"><label>Filtered Plots</label><div class="radio-group"><label><input type="radio" name="a1_sep" class="sep-plots" value="y" checked> Y</label><label><input type="radio" name="a1_sep" class="sep-plots" value="n"> N</label></div></div>
                 <div class="input-group"><label>Comparison Plots</label><div class="radio-group"><label><input type="radio" name="a1_comp" class="comp-plots" value="y" checked> Y</label><label><input type="radio" name="a1_comp" class="comp-plots" value="n"> N</label></div></div>
                 <div class="input-group">
@@ -72,6 +106,8 @@ class App1Processor:
                     </div>
                 </div>
                 <div class="input-group"><label>Save Automatically</label><div class="radio-group"><label><input type="radio" name="a1_save" class="save-plots" value="y"> Y</label><label><input type="radio" name="a1_save" class="save-plots" value="n" checked> N</label></div></div>
+                <div class="input-group"><label>Axis Title Font Size</label><input type="number" id="a1-axis-font" value="12"></div>
+                <div class="input-group"><label>Main Title Font Size</label><input type="number" id="a1-title-font" value="13"></div>
             </div>
         </div>
         <button class="btn-large init-btn" onclick="run_app1()">Initialize App 1 Processing</button>
@@ -89,8 +125,15 @@ class App1Processor:
             const payload = {
                 local_dir: document.getElementById('a1-local-dir').value,
                 check_s3: pane.querySelector('.check-s3:checked')?.value === 'y',
+                check_rs: pane.querySelector('.check-rs:checked')?.value === 'y',
+                rs_net: document.getElementById('rs-net').value || 'AM',
+                rs_sta: document.getElementById('rs-sta').value || 'RE038',
+                rs_loc: document.getElementById('rs-loc').value || '00',
+                rs_cha: document.getElementById('rs-cha').value || 'EHZ,ENZ,ENE,ENN',
                 custom_dir: document.getElementById('a1-custom-dir').value,
                 output_dir: document.getElementById('a1-out-dir').value,
+                gen_app2_config: pane.querySelector('.gen-app2-conf:checked')?.value === 'y',
+                app2_config_dir: document.getElementById('a1-conf-out-dir').value || document.getElementById('a1-out-dir').value,
                 eq_text: document.getElementById('a1-eq-text').value,
                 time_before: parseFloat(document.getElementById('a1-tb').value || 10),
                 time_after: parseFloat(document.getElementById('a1-ta').value || 90),
@@ -98,12 +141,15 @@ class App1Processor:
                 filters: extractFiltersUI('a1-fc'),
                 dampings: extractDampingsUI('a1-dc'),
                 draw_orig: pane.querySelector('.draw-orig:checked')?.value === 'y',
+                mark_extrema: pane.querySelector('.mark-extrema:checked')?.value === 'y',
                 keep_csv: pane.querySelector('.keep-csv:checked')?.value === 'y',
                 sep_plots: pane.querySelector('.sep-plots:checked')?.value === 'y',
                 comp_plots: pane.querySelector('.comp-plots:checked')?.value === 'y',
                 resp_plots: pane.querySelector('.resp-plots:checked')?.value === 'y',
                 resp_axes: ['x','y','z'].filter(ax => pane.querySelector('.resp-ax-'+ax)?.checked),
-                save_plots: pane.querySelector('.save-plots:checked')?.value === 'y'
+                save_plots: pane.querySelector('.save-plots:checked')?.value === 'y',
+                axis_font_size: parseInt(document.getElementById('a1-axis-font').value || 12),
+                title_font_size: parseInt(document.getElementById('a1-title-font').value || 13)
             };
             executeAppWorkflow('app1', payload);
         }
@@ -112,6 +158,13 @@ class App1Processor:
     def initialize(self, config):
         events = parse_timestamps(config['eq_text'], self.log_msg)
         if not events: return {"status": "Error"}
+
+        if config.get('check_rs'):
+            self.state['events'] = events
+            self.state['config'] = config
+            self.state['current_event_idx'] = 0
+            self.log_msg("--- APP 1: RASPBERRY SHAKE FDSNWS DOWNLOAD MODE ACTIVE ---")
+            return {"status": "Initialized"}
 
         custom_dir = Path(config['custom_dir']) if config.get('custom_dir', '').strip() else None
         self.state['s3_stations'] = []
@@ -150,6 +203,11 @@ class App1Processor:
     def start_page_thread(self):
         self.state['is_running'] = True
         config = self.state['config']
+        
+        if config.get('check_rs'):
+            self.run_rs_download(config)
+            return
+
         events_per_page = config.get('events_per_page', 5)
         start_idx = self.state['current_event_idx']
         end_idx = start_idx + events_per_page
@@ -166,13 +224,97 @@ class App1Processor:
         out_dir = Path(config['output_dir']) / "folder"
         custom_dir = Path(config['custom_dir']) if config.get('custom_dir', '').strip() else None
 
-        with concurrent.futures.ThreadPoolExecutor(max_workers=16) as executor:
+        workers = max(1, (os.cpu_count() or 4) - 2)
+        with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
             futures = [executor.submit(self.process_task, evt, stat, config, out_dir, custom_dir) for evt, stat in tasks]
             concurrent.futures.wait(futures)
 
         self.state['current_event_idx'] = end_idx
         self.log_msg(json.dumps({"done": True, "has_more": self.state['current_event_idx'] < len(self.state['events'])}))
         self.state['is_running'] = False
+
+    def run_rs_download(self, config):
+        out_dir = Path(config['output_dir']) / "Raspberry_Shake_Downloads"
+        out_dir.mkdir(parents=True, exist_ok=True)
+        
+        net = config.get('rs_net', 'AM')
+        sta = config.get('rs_sta', '').strip()
+        loc = config.get('rs_loc', '00')
+        cha = config.get('rs_cha', 'EHZ,ENZ,ENE,ENN')
+        
+        if not sta:
+            self.log_msg('<strong style="color:red;">Error: Station code is required for Raspberry Shake FDSN downloads.</strong>')
+            self.log_msg(json.dumps({"done": True, "has_more": False}))
+            self.state['is_running'] = False
+            return
+
+        events = self.state['events']
+        self.state['total'] = len(events)
+        self.state['progress'] = 0
+        
+        for evt in events:
+            st_hour = evt.replace(minute=0, second=0, microsecond=0)
+            et_hour = st_hour + pd.Timedelta(hours=1)
+            
+            st_str = st_hour.strftime("%Y-%m-%dT%H:%M:%S")
+            et_str = et_hour.strftime("%Y-%m-%dT%H:%M:%S")
+            
+            url = f"https://data.raspberryshake.org/fdsnws/dataselect/1/query?starttime={st_str}&endtime={et_str}&network={net}&station={sta}&location={loc}&channel={cha}&nodata=404"
+            
+            evt_file_str = evt.strftime("%Y-%m-%d_%H-%M-%S")
+            filename = f"{net}_{sta}_{evt_file_str}.mseed"
+            dest_path = out_dir / filename
+            
+            self.log_msg(f"Targeting FDSN Server for event: {evt_file_str} (Fetching full hour: {st_hour.hour:02d}:00:00)")
+            
+            try:
+                urllib.request.urlretrieve(url, str(dest_path))
+                self.log_msg(f"-> Success: Downloaded {filename}")
+            except urllib.error.HTTPError as e:
+                self.log_msg(f"-> Failed for {evt_file_str}. HTTP Error: {e.code}. Likely no data available or station offline.")
+            except Exception as e:
+                self.log_msg(f"-> Network/Request Error: {e}")
+            
+            self.state['progress'] += 1
+            self.log_msg(json.dumps({"progress": self.state['progress'], "total": self.state['total']}))
+            
+            time.sleep(3)
+
+        self.log_msg('<br><strong style="color: #6f42c1; font-size: 1.1em; padding: 10px; border: 1px dashed #6f42c1; display: inline-block;">convert downloaded data\'s from app6 to search earthquake from here</strong><br>')
+        
+        self.log_msg(json.dumps({"done": True, "has_more": False}))
+        self.state['is_running'] = False
+
+    def generate_app2_config(self, config, target_save_dir, event_str, station, start_time_dt, end_time_dt):
+        conf_out_path = Path(config.get('app2_config_dir', config.get('output_dir')))
+        conf_out_path.mkdir(parents=True, exist_ok=True)
+        
+        app2_conf = {
+            "app": "app2",
+            "target-dir": str(target_save_dir),
+            "start-hh": f"{start_time_dt.hour:02d}", "start-mm": f"{start_time_dt.minute:02d}", "start-ss": f"{start_time_dt.second + start_time_dt.microsecond / 1e6}",
+            "end-hh": f"{end_time_dt.hour:02d}", "end-mm": f"{end_time_dt.minute:02d}", "end-ss": f"{end_time_dt.second + end_time_dt.microsecond / 1e6}",
+            "filters": config.get('filters', []),
+            "dampings": config.get('dampings', []),
+            "draw-orig": "y" if config.get('draw_orig') else "n",
+            "mark-extrema": "y" if config.get('mark_extrema') else "n",
+            "keep-csv": "y" if config.get('keep_csv') else "n",
+            "sep-plots": "y" if config.get('sep_plots') else "n",
+            "comp-plots": "y" if config.get('comp_plots') else "n",
+            "fft-plots": "n", 
+            "resp-plots": "y" if config.get('resp_plots') else "n",
+            "save-plots": "y" if config.get('save_plots') else "n",
+            "axis-font-size": config.get('axis_font_size', 12),
+            "title-font-size": config.get('title_font_size', 13),
+            "custom_title_base": "",
+            "notes-comments": f"Auto-generated from App 1 Search for {station} on {event_str}"
+        }
+        
+        for ax in config.get('resp_axes', []): app2_conf[f"resp-ax-{ax}"] = True
+            
+        file_name = f"App2_Config_{station}_{event_str}.json"
+        with open(conf_out_path / file_name, 'w') as f:
+            json.dump(app2_conf, f, indent=4)
 
     def process_task(self, event_dt, station, config, parquet_folder, custom_dir_path):
         try:
@@ -247,6 +389,9 @@ class App1Processor:
             
             if not df_segment.empty:
                 process_and_plot_segment(df_segment, config, event_str, station, target_save_dir, start_time_dt, end_time_dt, self.log_msg)
+                if config.get('gen_app2_config'):
+                    self.generate_app2_config(config, target_save_dir, event_str, station, start_time_dt, end_time_dt)
+                    
             del dfs, df, df_segment; gc.collect()
         except Exception as e:
             self.log_msg(f"[{event_dt} - {station}] Error: {e}")

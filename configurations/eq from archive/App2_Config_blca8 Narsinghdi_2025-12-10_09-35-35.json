@@ -1,0 +1,37 @@
+{
+    "app": "app2",
+    "target-dir": "C:\\Users\\tanvi\\Downloads\\1\\folder\\2025-12-10_09-35-35\\blca8 Narsinghdi",
+    "start-hh": "09",
+    "start-mm": "36",
+    "start-ss": "30",
+    "end-hh": "09",
+    "end-mm": "37",
+    "end-ss": "30",
+    "filters": [
+        [
+            0,
+            10
+        ]
+    ],
+    "dampings": [
+        0
+    ],
+    "draw-orig": "y",
+    "keep-csv": "n",
+    "sep-plots": "y",
+    "comp-plots": "n",
+    "fft-plots": "y",
+    "fft-ax-x": true,
+    "fft-ax-y": true,
+    "fft-ax-z": true,
+    "resp-plots": "n",
+    "resp-ax-x": true,
+    "resp-ax-y": false,
+    "resp-ax-z": false,
+    "save-plots": "n",
+    "axis-font-size": "12",
+    "title-font-size": "13",
+    "custom_title_base": "12/10/2025 9:35:35 33 km E of Shwebo, Burma M 4.7",
+    "updated_titles": {},
+    "notes-comments": ""
+}

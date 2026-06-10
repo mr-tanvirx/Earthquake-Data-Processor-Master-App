@@ -1,0 +1,59 @@
+{
+    "app": "app5",
+    "output-dir": "",
+    "custom_title_base": "PGA 0.05g Scaled GF acceleration vs ETABS 5F Simulation from PGA 0.05g Scaled GF acceleration",
+    "compare_configs": [
+        {
+            "name": "ETABS 5F Simulation",
+            "target_dir": "G:\\.shortcut-targets-by-id\\1pgJ5082gz9FbZPAx8yB_s6yBrqH4WR0M\\Tahmeed_Sir\\BLCA Device Data Backup\\May have EQ data\\2026-05-26_05-40-49\\26 may EQ etabs 5F Simulated\\etabs_26may_GFacc_to_5Facc_02percent damping with stiffness mod\\PGA0.05g_scaled_Etab",
+            "start_hh": "05",
+            "start_mm": "42",
+            "start_ss": "7",
+            "end_hh": "05",
+            "end_mm": "42",
+            "end_ss": "18",
+            "invert": false,
+            "swap_xy": false
+        },
+        {
+            "name": "GF acceleration",
+            "target_dir": "G:\\.shortcut-targets-by-id\\1pgJ5082gz9FbZPAx8yB_s6yBrqH4WR0M\\Tahmeed_Sir\\BLCA Device Data Backup\\May have EQ data\\2026-05-26_05-40-49\\26 may EQ etabs 5F Simulated\\etabs_26may_GFacc_to_5Facc_02percent damping with stiffness mod\\PGA0.05g_scaled_gf",
+            "start_hh": "05",
+            "start_mm": "42",
+            "start_ss": "7",
+            "end_hh": "05",
+            "end_mm": "42",
+            "end_ss": "18",
+            "invert": false,
+            "swap_xy": false
+        }
+    ],
+    "filters": [
+        [
+            0,
+            10
+        ]
+    ],
+    "dampings": [
+        0.05
+    ],
+    "draw-orig": "y",
+    "sep-plots": "n",
+    "comp-plots": "n",
+    "fft-plots": "y",
+    "fft-ax-x": true,
+    "fft-ax-y": true,
+    "fft-ax-z": true,
+    "resp-plots": "y",
+    "resp-ax-x": true,
+    "resp-ax-y": true,
+    "resp-ax-z": true,
+    "save-plots": "n",
+    "y-axis-unit": "m/s²",
+    "axis-font-size": "11",
+    "title-font-size": "17",
+    "updated_titles": {
+        "Compare_2026-06-06_16-45-43_Orig_X": "PGA 0.05g Scaled GF acceleration vs ETABS 5F Simulation from PGA 0.05g Scaled GF acceleration | Axis: X",
+        "Compare_2026-06-06_16-45-43_Orig_Y": "PGA 0.05g Scaled GF acceleration vs ETABS 5F Simulation from PGA 0.05g Scaled GF acceleration | Axis: Y"
+    }
+}

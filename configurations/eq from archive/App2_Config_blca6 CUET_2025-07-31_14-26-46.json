@@ -1,0 +1,37 @@
+{
+    "app": "app2",
+    "target-dir": "G:\\.shortcut-targets-by-id\\1pgJ5082gz9FbZPAx8yB_s6yBrqH4WR0M\\Tahmeed_Sir\\BLCA Device Data Backup\\May have EQ data\\May have EQ\\might have eq\\2025-07-31_14-26-46\\blca6 CUET",
+    "start-hh": "14",
+    "start-mm": "27",
+    "start-ss": "40",
+    "end-hh": "14",
+    "end-mm": "28",
+    "end-ss": "40",
+    "filters": [
+        [
+            0,
+            5
+        ]
+    ],
+    "dampings": [
+        0
+    ],
+    "draw-orig": "y",
+    "keep-csv": "n",
+    "sep-plots": "y",
+    "comp-plots": "y",
+    "fft-plots": "n",
+    "fft-ax-x": true,
+    "fft-ax-y": true,
+    "fft-ax-z": true,
+    "resp-plots": "n",
+    "resp-ax-x": true,
+    "resp-ax-y": false,
+    "resp-ax-z": false,
+    "save-plots": "n",
+    "axis-font-size": "12",
+    "title-font-size": "13",
+    "custom_title_base": "7/31/2025 14:26:46 59 km WNW of Monywa, Burma M 4.7",
+    "updated_titles": {},
+    "notes-comments": ""
+}
