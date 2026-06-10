@@ -22,20 +22,6 @@ The suite automates complex analytical pipelines including Fast Fourier Transfor
 <img width="1889" height="891" alt="Screenshot 2026-06-10 154227" src="https://github.com/user-attachments/assets/c91fe1da-7c09-40cf-b16e-0fec7c9f0364" />
 
 
-<p align="center">
-  <img width="990" height="903" alt="Screenshot 2026-06-10 154459" src="https://github.com/user-attachments/assets/a004d06a-04b2-405f-8d1f-4e422b483984" />
-  <img width="1001" height="903" alt="Screenshot 2026-06-10 154606" src="https://github.com/user-attachments/assets/10a93461-0832-46e4-950c-7b66c3756118" />
-  <img width="980" height="473" alt="Screenshot 2026-06-10 154637" src="https://github.com/user-attachments/assets/879c29f2-208a-4098-9b31-42ccdb6442f6" />
-  <img width="988" height="911" alt="Screenshot 2026-06-10 154714" src="https://github.com/user-attachments/assets/697d02b6-a97a-44ec-a651-f0071ba4c649" />
-  <img width="1008" height="760" alt="Screenshot 2026-06-10 154745" src="https://github.com/user-attachments/assets/b9578bbe-f7fa-4273-b8d1-e50aed9a4e0b" />
-</p>
-
-
-<p align="center">
-  <img width="49%" alt="Compare Plot 1" src="https://github.com/user-attachments/assets/f9038e57-b77e-4e1e-bec9-c5ab8d8cf450" />
-  <img width="49%" alt="Compare Plot 2" src="https://github.com/user-attachments/assets/66917bfd-71e8-4e85-9e4f-34fa2a4df051" />
-</p>
-
 ---
 
 ## ✨ Comprehensive Features
@@ -63,6 +49,10 @@ The suite automates complex analytical pipelines including Fast Fourier Transfor
 * **Live Status Stream:** Real-time terminal output, progress bars, and pagination sent directly to the web interface via Server-Sent Events (SSE).
 
 ---
+
+
+
+
 
 ## 🔬 Methodology: Response Spectrum Calculation
 
@@ -130,6 +120,23 @@ $$PSA = \omega^2 \cdot \max(|u|)$$
 * **Archive Formatting:** Interpolates all data to a uniform target frequency (e.g., 100Hz) and outputs perfectly structured hourly `.parquet` files ready for Apps 1 and 2.
 
 ---
+<p align="center">
+  <img width="990" height="903" alt="Screenshot 2026-06-10 154459" src="https://github.com/user-attachments/assets/a004d06a-04b2-405f-8d1f-4e422b483984" />
+  <img width="1001" height="903" alt="Screenshot 2026-06-10 154606" src="https://github.com/user-attachments/assets/10a93461-0832-46e4-950c-7b66c3756118" />
+  <img width="980" height="473" alt="Screenshot 2026-06-10 154637" src="https://github.com/user-attachments/assets/879c29f2-208a-4098-9b31-42ccdb6442f6" />
+  <img width="988" height="911" alt="Screenshot 2026-06-10 154714" src="https://github.com/user-attachments/assets/697d02b6-a97a-44ec-a651-f0071ba4c649" />
+  <img width="1008" height="760" alt="Screenshot 2026-06-10 154745" src="https://github.com/user-attachments/assets/b9578bbe-f7fa-4273-b8d1-e50aed9a4e0b" />
+</p>
+
+
+<p align="center">
+  <img width="49%" alt="Compare Plot 1" src="https://github.com/user-attachments/assets/f9038e57-b77e-4e1e-bec9-c5ab8d8cf450" />
+  <img width="49%" alt="Compare Plot 2" src="https://github.com/user-attachments/assets/66917bfd-71e8-4e85-9e4f-34fa2a4df051" />
+</p>
+
+
+
+
 
 ## 🛠️ Prerequisites & Installation
 
