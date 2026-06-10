@@ -134,3 +134,41 @@ Deployment is streamlined via an automated Windows batch script.
    ```bash
    git clone [https://github.com/mr-tanvirx/Earthquake-Data-Processor-Master-App.git](https://github.com/mr-tanvirx/Earthquake-Data-Processor-Master-App.git)
    cd earthquake-data-processor
+2. **Run the Automated Setup:**
+   Double-click the `run_master.bat` file in the project root.
+   
+   *What happens next?*
+   * Creates a dedicated Python virtual environment (`venv`).
+   * Upgrades `pip` and installs essential scientific packages (`pandas`, `numpy`, `obspy`, `pyarrow`, `fastparquet`).
+   * Installs web and cloud dependencies (`flask`, `boto3`, `plotly`, `matplotlib`).
+   * Launches the Flask development server and automatically opens your default web browser to the local network address (`http://localhost:5000`).
+
+---
+
+## 📂 Project Structure
+
+```text
+├── master_app.py              # Main Flask application, routing, and SSE task orchestrator
+├── processor_shared.py        # Core DSP logic, Matplotlib/Plotly rendering, and AWS S3 config
+├── processor_app1.py          # App 1: Search EQ Archive (S3/Local/FDSN)
+├── processor_app2.py          # App 2: Visualizing CSV/Parquet Data
+├── processor_app3.py          # App 3: BLCA Data Availability Calendars
+├── processor_app4.py          # App 4: Parquet <-> CSV Batch Converter
+├── processor_app5.py          # App 5: Multi-Station Comparative Engine
+├── processor_app6.py          # App 6: miniSEED to Parquet Archiver
+└── run_master.bat             # Automated Windows environment deployment script
+
+---
+
+## ⚠️ Troubleshooting
+
+* **Server immediately closes when running `.bat`:** Ensure Python is added to your Windows `PATH`. Open a command prompt and type `python --version` to verify.
+* **Obspy Installation Errors:** Ensure you have the appropriate C++ build tools installed on Windows if binary wheels are not available for your specific Python version.
+* **AWS Connectivity Errors:** Ensure you populate `AWS_ACCESS_KEY` and `AWS_SECRET_KEY` variables securely within `processor_shared.py` to execute S3 queries.
+* **Interactive Plots not Loading:** The stretch/zoom Plotly features generate temporary files in `temp_interactive_plots`. Ensure the application has write-permissions in its directory.
+
+---
+
+## 📄 License
+
+Distributed under the MIT License. See `LICENSE` for more information.
