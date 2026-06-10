@@ -145,6 +145,18 @@ Deployment is streamlined via an automated Windows batch script.
 
 ---
 
+---
+
+## ⚠️ Troubleshooting
+
+* **Server immediately closes when running `.bat`:** Ensure Python is added to your Windows `PATH`. Open a command prompt and type `python --version` to verify.
+* **Obspy Installation Errors:** Ensure you have the appropriate C++ build tools installed on Windows if binary wheels are not available for your specific Python version.
+* **AWS Connectivity Errors:** Ensure you populate `AWS_ACCESS_KEY` and `AWS_SECRET_KEY` variables securely within `processor_shared.py` to execute S3 queries.
+* **Interactive Plots not Loading:** The stretch/zoom Plotly features generate temporary files in `temp_interactive_plots`. Ensure the application has write-permissions in its directory.
+
+---
+
+
 ## 📂 Project Structure
 
 ```text
@@ -158,17 +170,5 @@ Deployment is streamlined via an automated Windows batch script.
 ├── processor_app6.py          # App 6: miniSEED to Parquet Archiver
 └── run_master.bat             # Automated Windows environment deployment script
 
----
 
-## ⚠️ Troubleshooting
 
-* **Server immediately closes when running `.bat`:** Ensure Python is added to your Windows `PATH`. Open a command prompt and type `python --version` to verify.
-* **Obspy Installation Errors:** Ensure you have the appropriate C++ build tools installed on Windows if binary wheels are not available for your specific Python version.
-* **AWS Connectivity Errors:** Ensure you populate `AWS_ACCESS_KEY` and `AWS_SECRET_KEY` variables securely within `processor_shared.py` to execute S3 queries.
-* **Interactive Plots not Loading:** The stretch/zoom Plotly features generate temporary files in `temp_interactive_plots`. Ensure the application has write-permissions in its directory.
-
----
-
-## 📄 License
-
-Distributed under the MIT License. See `LICENSE` for more information.
