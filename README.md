@@ -89,16 +89,29 @@ $$PSA = \omega^2 \cdot \max(|u|)$$
 * **Automated Window Extraction:** Define a lead-in and lag-out time (e.g., 10 seconds before, 90 seconds after). The app will automatically slice the massive daily datasets down to the exact event window.
 * **Seamless Handoff:** App 1 can automatically generate `.json` configuration files for each discovered event, allowing you to instantly load them into App 2 for granular tweaking.
 
+
+<p align="center">
+  <img width="990" height="903" alt="Screenshot 2026-06-10 154459" src="https://github.com/user-attachments/assets/a004d06a-04b2-405f-8d1f-4e422b483984" />
+</p>
+
+
 ### 📈 App 2: Direct CSV/Parquet Visualization
 **Purpose:** A highly granular visual analysis dashboard for deep-diving into specific, targeted datasets.
 * **Multi-Stage Processing:** Apply multiple band-pass filters simultaneously to clean raw data. 
 * **Dynamic Analytics:** Toggle side-by-side comparative plots (Raw vs. Filtered), frequency-domain FFT plots (per axis), and Pseudo-Spectral Acceleration (PSA) response plots across multiple damping ratios.
 * **Unit Calibration Matrix:** Features a built-in mathematical unit converter. Instantly multiply sensor data by scalar fractions (e.g., multiply by `1/9.81` to convert $m/s^2$ to standard gravity *g*) and automatically update all axis labels.
 
+<img width="990" height="903" alt="Screenshot 2026-06-10 154459" src="https://github.com/user-attachments/assets/a004d06a-04b2-405f-8d1f-4e422b483984" />
+
 ### 📅 App 3: BLCA Data Availability Dashboard
 **Purpose:** A diagnostic reporting tool designed to track sensor uptime and identify critical data gaps across entire networks.
 * **Deep Directory Scanning:** Provide an S3 prefix or local drive letter, and App 3 will recursively crawl the entire archive structure (`YYYY/MM/DD/HH`).
 * **Visual Health Mapping:** Generates clean, color-coded SVG calendar heatmaps indicating exact hours of operation, missing hours, and complete network dropouts for every individual station over multiple years.
+
+  
+<img width="984" height="538" alt="Screenshot 2026-06-10 162723" src="https://github.com/user-attachments/assets/7a9bfe48-5811-440d-bf81-01935d66a71b" />
+
+
 
 ### 🗄️ App 4: High-Speed Format Converter
 **Purpose:** A brute-force, high-throughput batch processing engine for translating data formats.
@@ -106,11 +119,17 @@ $$PSA = \omega^2 \cdot \max(|u|)$$
 * **Architecture Preservation:** Recursively traverses the input directory and perfectly mimics the nested folder structure (`Station/Archive/Year/Month/...`) in the destination directory, preventing data spillage.
 * **Multi-Threaded:** Automatically parallelizes the conversion tasks across your available CPU cores to handle thousands of files in minutes.
 
+
+  <img width="980" height="473" alt="Screenshot 2026-06-10 154637" src="https://github.com/user-attachments/assets/879c29f2-208a-4098-9b31-42ccdb6442f6" />
+
 ### ⚖️ App 5: Multi-Station Comparative Analysis
 **Purpose:** The ultimate tool for cross-analyzing structural responses across different sensors during the exact same seismic event.
 * **Multi-Profile Stacking:** Load unlimited independent datasets (from different floors of a building or different geographic stations) and stack them on unified, synchronized timelines.
 * **Physical Correction Overrides:** Swap structural axes (e.g., plot Station A's X-axis against Station B's Y-axis) or invert the polarity (multiply by -1) to dynamically correct physical sensor misalignments in the field without editing the source data.
 * **Amplification Tracking:** Overlay FFT amplitudes and Response Spectrums from multiple stations on a single, color-coded Plotly graph to visually prove structural amplification or frequency shifts.
+
+
+  <img width="988" height="911" alt="Screenshot 2026-06-10 154714" src="https://github.com/user-attachments/assets/697d02b6-a97a-44ec-a651-f0071ba4c649" />
 
 ### 📡 App 6: Raspberry Shake to BLCA Converter
 **Purpose:** The ingestion pipeline that bridges the gap between raw hardware traces and the analytical database.
@@ -121,10 +140,9 @@ $$PSA = \omega^2 \cdot \max(|u|)$$
 
 ---
 <p align="center">
-  <img width="990" height="903" alt="Screenshot 2026-06-10 154459" src="https://github.com/user-attachments/assets/a004d06a-04b2-405f-8d1f-4e422b483984" />
-  <img width="1001" height="903" alt="Screenshot 2026-06-10 154606" src="https://github.com/user-attachments/assets/10a93461-0832-46e4-950c-7b66c3756118" />
-  <img width="980" height="473" alt="Screenshot 2026-06-10 154637" src="https://github.com/user-attachments/assets/879c29f2-208a-4098-9b31-42ccdb6442f6" />
-  <img width="988" height="911" alt="Screenshot 2026-06-10 154714" src="https://github.com/user-attachments/assets/697d02b6-a97a-44ec-a651-f0071ba4c649" />
+  
+
+
   <img width="1008" height="760" alt="Screenshot 2026-06-10 154745" src="https://github.com/user-attachments/assets/b9578bbe-f7fa-4273-b8d1-e50aed9a4e0b" />
 </p>
 
