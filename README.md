@@ -81,6 +81,15 @@ $$PSA = \omega^2 \cdot \max(|u|)$$
 
 ---
 
+
+<p align="center">
+  <img width="49%" alt="Compare Plot 1" src="https://github.com/user-attachments/assets/f9038e57-b77e-4e1e-bec9-c5ab8d8cf450" />
+  <img width="49%" alt="Compare Plot 2" src="https://github.com/user-attachments/assets/66917bfd-71e8-4e85-9e4f-34fa2a4df051" />
+</p>
+
+
+
+
 ## 💻 Usage Guide: The 6 Core Modules
 
 ### 🔍 App 1: Global Archive Search
@@ -146,11 +155,6 @@ $$PSA = \omega^2 \cdot \max(|u|)$$
   <img width="1008" height="760" alt="Screenshot 2026-06-10 154745" src="https://github.com/user-attachments/assets/b9578bbe-f7fa-4273-b8d1-e50aed9a4e0b" />
 </p>
 
-
-<p align="center">
-  <img width="49%" alt="Compare Plot 1" src="https://github.com/user-attachments/assets/f9038e57-b77e-4e1e-bec9-c5ab8d8cf450" />
-  <img width="49%" alt="Compare Plot 2" src="https://github.com/user-attachments/assets/66917bfd-71e8-4e85-9e4f-34fa2a4df051" />
-</p>
 
 
 
