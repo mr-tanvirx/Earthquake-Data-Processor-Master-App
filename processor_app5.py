@@ -1,3 +1,5 @@
+# processor_app5.py
+
 import json, gc, os, threading
 import numpy as np
 import pandas as pd
@@ -124,6 +126,9 @@ class App5Processor:
                     <label style="margin-bottom: 5px; cursor:pointer; color: #17a2b8; font-weight: bold;">
                         <input type="checkbox" class="cmp-change-unit" onchange="this.parentElement.nextElementSibling.style.display = this.checked ? 'block' : 'none'" ${dataObj?.change_unit ? 'checked' : ''}> Change Plotting Unit
                     </label>
+                    <label style="margin-left: 15px; cursor:pointer; color: #17a2b8; font-weight: bold;">
+                        <input type="checkbox" class="cmp-mode-bias" ${dataObj?.mode_bias !== false ? 'checked' : ''}> Auto-Center to 0 (Mode)
+                    </label>
                     <div style="display: ${dataObj?.change_unit ? 'block' : 'none'}; margin-top: 5px;">
                         <input type="text" class="cmp-unit-factor" placeholder="Factor (e.g., 1/9.81)" value="${dataObj?.unit_factor || '1/9.81'}" style="width: 140px; margin-right: 10px;">
                         <input type="text" class="cmp-unit-name" placeholder="Unit (e.g., g)" value="${dataObj?.unit_name || 'g'}" style="width: 100px;">
@@ -168,6 +173,7 @@ class App5Processor:
                     row.querySelector('.cmp-change-unit').dispatchEvent(new Event('change'));
                     row.querySelector('.cmp-unit-factor').value = conf['unit-factor'] || conf.unit_factor || "1/9.81";
                     row.querySelector('.cmp-unit-name').value = conf['unit-name'] || conf.unit_name || "g";
+                    row.querySelector('.cmp-mode-bias').checked = conf.hasOwnProperty('mode_bias') ? conf['mode_bias'] : true;
 
                     calculateDurationExact(`c${id}-sh`, `c${id}-sm`, `c${id}-ss`, `c${id}-eh`, `c${id}-em`, `c${id}-es`, `c${id}-duration`);
                     document.getElementById('log-area').innerHTML += `> Profile ${id} loaded time and directory bounds from JSON.<br>`;
@@ -193,6 +199,7 @@ class App5Processor:
                     change_unit: row.querySelector('.cmp-change-unit').checked,
                     unit_factor: row.querySelector('.cmp-unit-factor').value,
                     unit_name: row.querySelector('.cmp-unit-name').value,
+                    mode_bias: row.querySelector('.cmp-mode-bias').checked,
                     invert: row.querySelector('.cmp-inv').checked,
                     swap_xy: row.querySelector('.cmp-swap').checked
                 });
@@ -424,6 +431,14 @@ class App5Processor:
                         self.log_msg(f"[{name}] Applied unit factor: {factor} ({u_name})")
                     else:
                         display_name = f"{name} ({y_unit})" if y_unit else name
+
+                    if conf.get('mode_bias'):
+                        for col in ['x', 'y', 'z']:
+                            if col in df_segment.columns:
+                                mode_series = df_segment[col].round(4).mode()
+                                bias = mode_series.iloc[0] if not mode_series.empty else df_segment[col].median()
+                                df_segment[col] = df_segment[col] - bias
+                                self.log_msg(f"[{name}] Auto-Centered {col.upper()} axis using Mode Average: {bias}")
 
                     if conf.get('swap_xy'):
                         temp_x = df_segment['x'].copy()

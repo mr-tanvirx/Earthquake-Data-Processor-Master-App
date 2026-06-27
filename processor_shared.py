@@ -9,10 +9,10 @@ matplotlib.rcParams['svg.fonttype'] = 'none'
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_agg import FigureCanvasAgg
 
-AWS_ACCESS_KEY = ' '
-AWS_SECRET_KEY = ' '
-AWS_REGION = ' '
-TARGET_BUCKET = ' '
+AWS_ACCESS_KEY = ''
+AWS_SECRET_KEY = ''
+AWS_REGION = 'ap-south-1'
+TARGET_BUCKET = 'blca'
 PREFIX = ''
 
 STATION_LOCATIONS = {

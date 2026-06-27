@@ -1,3 +1,5 @@
+# processor_app2.py
+
 import json, gc, os
 import pandas as pd
 from pathlib import Path
@@ -29,6 +31,12 @@ class App2Processor:
                 <div class="input-group"><label>Target Directory (Input & Output Area)</label><input type="text" id="a2-target-dir" placeholder="e.g., C:\\My_Direct_Folder"></div>
                 <div class="input-group" style="margin-top: 15px;"><label>Custom Plot Title Base (Optional)</label><input type="text" id="a2-custom-title" placeholder="e.g., Earthquake Event 1"></div>
                 
+                <div class="input-group" style="margin-top: 15px;">
+                    <label style="color: #007bff; font-weight: bold; cursor: pointer;">
+                        <input type="checkbox" id="a2-mode-bias" checked> Auto-Center to 0 (Mode Average)
+                    </label>
+                </div>
+
                 <div class="input-group" style="margin-top: 15px;">
                     <label style="color: #007bff; font-weight: bold;">Change Plotting Unit?</label>
                     <div class="radio-group">
@@ -138,6 +146,7 @@ class App2Processor:
                 "end-hh": document.getElementById('a2-eh').value,
                 "end-mm": document.getElementById('a2-em').value,
                 "end-ss": document.getElementById('a2-es').value,
+                "mode_bias": document.getElementById('a2-mode-bias').checked,
                 "change-unit": pane.querySelector('.change-unit:checked')?.value || "n",
                 "unit-factor": document.getElementById('a2-unit-factor').value || "1/9.81",
                 "unit-name": document.getElementById('a2-unit-name').value || "g",
@@ -197,6 +206,9 @@ class App2Processor:
                     document.getElementById('a2-unit-factor').value = conf['unit-factor'] || conf.unit_factor || "1/9.81";
                     document.getElementById('a2-unit-name').value = conf['unit-name'] || conf.unit_name || "g";
                     
+                    if(conf.hasOwnProperty('mode_bias')) document.getElementById('a2-mode-bias').checked = conf['mode_bias'];
+                    else document.getElementById('a2-mode-bias').checked = true;
+
                     if(conf.updated_titles) {
                         window._customTitles = Object.assign(window._customTitles || {}, conf.updated_titles);
                     }
@@ -275,6 +287,7 @@ class App2Processor:
                 end_hh: document.getElementById('a2-eh').value,
                 end_mm: document.getElementById('a2-em').value,
                 end_ss: document.getElementById('a2-es').value,
+                mode_bias: document.getElementById('a2-mode-bias').checked,
                 filters: extractFiltersUI('a2-fc'),
                 dampings: extractDampingsUI('a2-dc'),
                 custom_title_base: document.getElementById('a2-custom-title').value,
@@ -398,6 +411,14 @@ class App2Processor:
                     df_segment['z'] *= factor
                     self.log_msg(f"[{station}] Applied custom unit factor: {factor} ({config.get('unit_name', 'g')})")
                     
+                if config.get('mode_bias'):
+                    for col in ['x', 'y', 'z']:
+                        if col in df_segment.columns:
+                            mode_series = df_segment[col].round(4).mode()
+                            bias = mode_series.iloc[0] if not mode_series.empty else df_segment[col].median()
+                            df_segment[col] = df_segment[col] - bias
+                            self.log_msg(f"[{station}] Auto-Centered {col.upper()} axis using Mode Average: {bias}")
+
                 process_and_plot_segment(df_segment, config, event_str, station, station_dir, start_time_dt, end_time_dt, self.log_msg)
             else:
                 self.log_msg(f"[{station}] Data found, but nothing existed inside the requested time window.")
