@@ -20,7 +20,7 @@ call "%VENV_DIR%\Scripts\activate.bat"
 
 echo Installing required Python packages (Verbose Mode Active)...
 python -m pip install --upgrade pip -v
-pip install -v flask pandas numpy matplotlib pyarrow fastparquet boto3 plotly obspy
+pip install -v flask pandas numpy matplotlib pyarrow fastparquet boto3 plotly obspy paramiko openpyxl
 
 echo Starting the Master Web UI Application...
 python master_app.py

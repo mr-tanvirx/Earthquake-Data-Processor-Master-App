@@ -5,7 +5,58 @@ import pandas as pd
 from pathlib import Path
 import boto3
 import concurrent.futures
-from processor_shared import parse_timestamps, fetch_s3_stations, process_and_plot_segment, AWS_ACCESS_KEY, AWS_SECRET_KEY, AWS_REGION, TARGET_BUCKET, PREFIX
+from datetime import datetime
+import re
+
+from processor_shared import process_and_plot_segment, AWS_ACCESS_KEY, AWS_SECRET_KEY, AWS_REGION, TARGET_BUCKET, PREFIX
+
+# Safe fallback imports for shared utilities
+try:
+    from processor_shared import parse_timestamps as shared_parse_timestamps
+except ImportError:
+    shared_parse_timestamps = None
+
+try:
+    from processor_shared import fetch_s3_stations
+except ImportError:
+    def fetch_s3_stations(s3_client, bucket, prefix="", log_func=print):
+        """Fallback station locator if missing from shared module."""
+        stations = []
+        try:
+            paginator = s3_client.get_paginator('list_objects_v2')
+            for page in paginator.paginate(Bucket=bucket, Prefix=prefix, Delimiter='/'):
+                if 'CommonPrefixes' in page:
+                    for cp in page['CommonPrefixes']:
+                        parts = cp['Prefix'].strip('/').split('/')
+                        if parts: stations.append(parts[-1])
+        except Exception:
+            pass
+        if not stations:
+            # Resilient fallback default list
+            stations = ['blca1', 'blca2', 'blca3', 'blca4', 'blca5', 'blca6', 'blca7', 'blca8', 'blca9', 'blca10', 'blca11', 'blca13', 'blca14', 'blca15', 'blca16', 'blca17']
+        return sorted(list(set(stations)))
+
+def parse_timestamps(text, log_func=print):
+    """Robust timestamp parser wrapped with local format fallbacks."""
+    if shared_parse_timestamps:
+        try:
+            res = shared_parse_timestamps(text, log_func)
+            if res: return res
+        except Exception:
+            pass
+    
+    target_events = []
+    if not text: return target_events
+    for line in text.strip().split('\n'):
+        line = line.strip()
+        if not line: continue
+        for fmt in ["%m/%d/%Y %H:%M:%S", "%m/%d/%y %H:%M:%S", "%m/%d/%Y %H:%M", "%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M", "%d/%m/%Y %H:%M:%S"]:
+            try:
+                target_events.append(datetime.strptime(line, fmt))
+                break
+            except ValueError:
+                continue
+    return target_events
 
 class App1Processor:
     APP_ID = "app1"
@@ -15,7 +66,8 @@ class App1Processor:
         self.log_queue = log_queue
         self.state = {"is_running": False, "events": [], "all_stations": [], "current_event_idx": 0, "config": None, "local_stations": [], "s3_stations": []}
 
-    def log_msg(self, msg): self.log_queue.put(msg)
+    def log_msg(self, msg): 
+        self.log_queue.put(msg)
 
     def get_html_template(self):
         return """
@@ -185,7 +237,8 @@ class App1Processor:
                 try:
                     s3_client = boto3.client('s3', aws_access_key_id=AWS_ACCESS_KEY, aws_secret_access_key=AWS_SECRET_KEY, region_name=AWS_REGION)
                     self.state['s3_stations'] = fetch_s3_stations(s3_client, TARGET_BUCKET, PREFIX, self.log_msg)
-                except Exception as e: self.log_msg(f"S3 Error: {e}")
+                except Exception as e: 
+                    self.log_msg(f"S3 Error: {e}")
 
             local_dir_base = Path(config['local_dir']) if config.get('local_dir', '').strip() else None
             if local_dir_base and local_dir_base.exists():
@@ -338,14 +391,14 @@ class App1Processor:
                 file_acquired = False
                 
                 if target_save_dir.exists():
-                    cached = [f for f in target_save_dir.glob("*.parquet") if f.stem[-2:] == hour_str]
+                    cached = [f for f in target_save_dir.glob("*.parquet") if f.stem[-2:] == hour_str or re.search(r'[_]' + hour_str + r'([:_.]|$)', f.stem)]
                     if cached:
                         acquired_files.extend(cached)
                         continue
 
                 if custom_dir_path and (custom_dir_path / event_str / station).exists():
                     for f in (custom_dir_path / event_str / station).glob("*.parquet"):
-                        if f.stem[-2:] == hour_str:
+                        if f.stem[-2:] == hour_str or re.search(r'[_]' + hour_str + r'([:_.]|$)', f.stem):
                             acquired_files.append(f)
                             file_acquired = True
                             break
@@ -354,7 +407,7 @@ class App1Processor:
                     day_dir = Path(config['local_dir']) / station / "archive" / str(req_hour.year) / f"{req_hour.month:02d}" / f"{req_hour.day:02d}"
                     if day_dir.exists():
                         for f in day_dir.glob("*.parquet"):
-                            if f.stem[-2:] == hour_str:
+                            if f.stem[-2:] == hour_str or re.search(r'[_]' + hour_str + r'([:_.]|$)', f.stem):
                                 target_save_dir.mkdir(parents=True, exist_ok=True)
                                 dest = target_save_dir / f.name
                                 shutil.copy2(f, dest)
@@ -368,13 +421,16 @@ class App1Processor:
                         resp = s3_client.list_objects_v2(Bucket=TARGET_BUCKET, Prefix=target_prefix)
                         if 'Contents' in resp:
                             for obj in resp['Contents']:
-                                if obj['Key'].endswith('.parquet') and obj['Key'].rsplit('.', 1)[0][-2:] == hour_str:
-                                    target_save_dir.mkdir(parents=True, exist_ok=True)
-                                    dest = target_save_dir / obj['Key'].split('/')[-1].replace(':', '_')
-                                    s3_client.download_file(TARGET_BUCKET, obj['Key'], str(dest))
-                                    acquired_files.append(dest)
-                                    break
-                    except Exception: pass
+                                if obj['Key'].endswith('.parquet'):
+                                    key_stem = obj['Key'].rsplit('.', 1)[0]
+                                    if key_stem[-2:] == hour_str or re.search(r'[_]' + hour_str + r'([:_.]|$)', key_stem):
+                                        target_save_dir.mkdir(parents=True, exist_ok=True)
+                                        dest = target_save_dir / obj['Key'].split('/')[-1].replace(':', '_')
+                                        s3_client.download_file(TARGET_BUCKET, obj['Key'], str(dest))
+                                        acquired_files.append(dest)
+                                        break
+                    except Exception: 
+                        pass
 
             if not acquired_files: return
 

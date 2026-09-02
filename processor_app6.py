@@ -20,6 +20,21 @@ class App6Processor:
         <div class="grid-layout">
             <div class="section-card" style="border: 2px solid #6f42c1;">
                 <div class="section-title">Raspberry Shake (miniSEED) to BLCA Parquet Converter</div>
+                
+                <!-- Internal Sub-Tabs for File Type Selection -->
+                <div class="sub-tab-nav" style="display: flex; gap: 5px; margin-bottom: 20px; border-bottom: 2px solid var(--border-color); padding-bottom: 5px;">
+                    <button type="button" class="sub-tab-btn" id="app6-subtab-standard" onclick="switchApp6SubTab('standard')" style="padding: 10px 15px; cursor: pointer; background: #6f42c1; color: white; border: none; border-radius: 6px 6px 0 0; font-weight: bold; transition: 0.2s;">Standard miniSEED (.mseed)</button>
+                    <button type="button" class="sub-tab-btn" id="app6-subtab-jday" onclick="switchApp6SubTab('jday')" style="padding: 10px 15px; cursor: pointer; background: var(--tab-bg); color: var(--text-color); border: none; border-radius: 6px 6px 0 0; font-weight: bold; transition: 0.2s;">Julian Day Files (.325 / Day Archives)</button>
+                </div>
+                
+                <input type="hidden" id="app6-file-mode" value="standard">
+                
+                <div id="app6-jday-note" style="display: none; background: rgba(111, 66, 193, 0.1); border-left: 4px solid #6f42c1; padding: 10px; margin-bottom: 15px; border-radius: 0 6px 6px 0;">
+                    <small style="color: var(--text-color); font-weight: 500; display: block;">
+                        <strong>Julian Day Mode Active:</strong> Tailored for channel data split by Julian day extensions (e.g., <code>AM.RE038.00.EHZ.D.2025.325</code> as referenced in image_74630a.png). Non-seismic metadata components like <code>.xml</code> are filtered automatically.
+                    </small>
+                </div>
+
                 <div class="input-group">
                     <label>Input Directory (Location of .mseed or trace folders)</label>
                     <input type="text" id="app6-input-dir" placeholder="e.g., C:\\RS_Data">
@@ -62,10 +77,34 @@ class App6Processor:
 
     def get_js_funcs(self):
         return """
+        function switchApp6SubTab(mode) {
+            const btnStandard = document.getElementById('app6-subtab-standard');
+            const btnJday = document.getElementById('app6-subtab-jday');
+            const noteBox = document.getElementById('app6-jday-note');
+            const modeInput = document.getElementById('app6-file-mode');
+            
+            if (mode === 'standard') {
+                btnStandard.style.background = '#6f42c1';
+                btnStandard.style.color = 'white';
+                btnJday.style.background = 'var(--tab-bg)';
+                btnJday.style.color = 'var(--text-color)';
+                noteBox.style.display = 'none';
+                modeInput.value = 'standard';
+            } else {
+                btnJday.style.background = '#6f42c1';
+                btnJday.style.color = 'white';
+                btnStandard.style.background = 'var(--tab-bg)';
+                btnStandard.style.color = 'var(--text-color)';
+                noteBox.style.display = 'block';
+                modeInput.value = 'jday';
+            }
+        }
+
         function run_app6() {
             const pane = document.getElementById('tab-app6');
             const payload = {
                 action: 'convert',
+                file_mode: document.getElementById('app6-file-mode').value,
                 input_dir: document.getElementById('app6-input-dir').value,
                 output_dir: document.getElementById('app6-output-dir').value,
                 out_struct: pane.querySelector('.out-struct:checked')?.value || 'blca',
@@ -87,6 +126,7 @@ class App6Processor:
             self.state['is_running'] = False
             return
 
+        file_mode = config.get("file_mode", "standard")
         input_dir = config.get("input_dir")
         output_dir = config.get("output_dir")
         out_struct = config.get("out_struct", "blca")
@@ -113,7 +153,11 @@ class App6Processor:
             return
 
         out_path.mkdir(parents=True, exist_ok=True)
-        self.log_msg(f"Scanning {input_dir} for miniSEED data...")
+        
+        if file_mode == "jday":
+            self.log_msg(f"Scanning {input_dir} for Julian Day structured channel archive traces...")
+        else:
+            self.log_msg(f"Scanning {input_dir} for miniSEED data...")
 
         groups = {}
         files = [f for f in in_path.rglob("*") if f.is_file()]

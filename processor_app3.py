@@ -10,10 +10,25 @@ class App3Processor:
 
     def __init__(self, log_queue):
         self.log_queue = log_queue
-        self.state = {"is_running": False, "cached_data": None, "cached_type": None}
+        self.state = {
+            "is_running": False, 
+            "cached_data": None, 
+            "cached_type": None,
+            "progress": 0,
+            "total": 1
+        }
+        self.current_payload = {}
 
     def log_msg(self, msg):
         self.log_queue.put(msg)
+
+    def initialize(self, data):
+        self.current_payload = data or {}
+        return {"status": "Initialized"}
+
+    def start_page_thread(self):
+        action = self.current_payload.get('action')
+        self.run_custom_action(action, self.current_payload)
 
     def get_html_template(self):
         return """
@@ -35,12 +50,39 @@ class App3Processor:
 
     def get_js_funcs(self):
         return """
+        function executeAppAction(appId, payload, isRender = false) {
+            const logArea = document.getElementById('log-area');
+            if (logArea) logArea.innerHTML = "";
+            if (!isRender) {
+                const svgOut = document.getElementById('svg-output');
+                if (svgOut) svgOut.innerHTML = "";
+            }
+            listenToStream();
+            fetch(`/api/${appId}/init`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === "Initialized") {
+                    fetch(`/api/${appId}/process`, { method: 'POST' });
+                } else {
+                    if (logArea) logArea.innerHTML += "> Action Error: " + (data.message || "Execution failed.") + "<br>";
+                }
+            })
+            .catch(e => {
+                if (logArea) logArea.innerHTML += "> Request failed: " + e + "<br>";
+            });
+        }
+
         function run_app3(action) {
             if(action === 'local_svg' || action === 's3_svg') {
                 document.getElementById('app3-suffixes-container').style.display = 'none';
             }
             executeAppAction('app3', { action: action, local_dir: document.getElementById('app3-local-dir').value });
         }
+
         function triggerApp3Render(stations) {
             let suffixDict = {};
             if (stations && stations.length) {

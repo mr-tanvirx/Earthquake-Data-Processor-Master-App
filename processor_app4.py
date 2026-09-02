@@ -9,10 +9,19 @@ class App4Processor:
 
     def __init__(self, log_queue):
         self.log_queue = log_queue
-        self.state = {"is_running": False}
+        self.state = {"is_running": False, "config": None}
 
     def log_msg(self, msg):
         self.log_queue.put(msg)
+
+    def initialize(self, config):
+        self.state['config'] = config or {}
+        return {"status": "Initialized"}
+
+    def start_page_thread(self):
+        config = self.state.get('config', {})
+        action = config.get('action')
+        self.run_custom_action(action, config)
 
     def get_html_template(self):
         return """

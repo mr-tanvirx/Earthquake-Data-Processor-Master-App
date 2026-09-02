@@ -9,10 +9,10 @@ matplotlib.rcParams['svg.fonttype'] = 'none'
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_agg import FigureCanvasAgg
 
-AWS_ACCESS_KEY = ''
-AWS_SECRET_KEY = ''
-AWS_REGION = 'ap-south-1'
-TARGET_BUCKET = 'blca'
+AWS_ACCESS_KEY = '  '
+AWS_SECRET_KEY = '  '
+AWS_REGION = ' '
+TARGET_BUCKET = 'b '
 PREFIX = ''
 
 STATION_LOCATIONS = {
@@ -430,16 +430,16 @@ def process_and_plot_segment(df_segment, config, event_str, station, target_save
 
     if bool(config.get('filters', [])) and (config.get('sep_plots') or config.get('comp_plots') or config.get('resp_plots') or config.get('fft_plots')):
         n_samples = len(df_segment)
-        time_step = 1.0 / 100.0
-        freqs = np.fft.rfftfreq(n_samples, d=time_step)
-        fft_data = {col: np.fft.rfft(df_segment[col].values) for col in ['x', 'y', 'z']}
+        freqs = np.fft.rfftfreq(n_samples, d=dt)
+        fft_data = {col: np.fft.rfft(df_segment[col].values) * dt for col in ['x', 'y', 'z']}
 
         for low_cut, high_cut in config.get('filters', []):
             filter_label = f"{low_cut}to{high_cut}Hz"
             mask_freq = (freqs >= low_cut) & (freqs <= high_cut)
             df_filtered = df_segment.copy()
             for col in ['x', 'y', 'z']:
-                df_filtered[col] = np.fft.irfft(np.where(mask_freq, fft_data[col], 0), n=n_samples)
+                filtered_fft = np.where(mask_freq, fft_data[col], 0)
+                df_filtered[col] = np.fft.irfft(filtered_fft / dt, n=n_samples)
 
             if config.get('keep_csv') and target_save_dir:
                 df_filtered.drop(columns=['timestamp_dt'], errors='ignore').to_csv(target_save_dir / f"{base_file_name}_Filtered_{filter_label}.csv", index=False)
@@ -572,14 +572,22 @@ def process_multi_compare(data_list, config, event_str, target_save_dir, log_msg
             comp_data_list = []
             
             for item in data_list:
+                item_dt = item.get('dt')
+                if item_dt is None or item_dt <= 0:
+                    item_dt = 0.01
+
                 n_samples = len(item['df'])
-                freqs = np.fft.rfftfreq(n_samples, d=1.0/100.0)
+                freqs = np.fft.rfftfreq(n_samples, d=item_dt)
                 mask_freq = (freqs >= low_cut) & (freqs <= high_cut)
                 df_filt = item['df'].copy()
+                
                 for col in axes_to_plot:
-                    df_filt[col] = np.fft.irfft(np.where(mask_freq, np.fft.rfft(item['df'][col].values), 0), n=n_samples)
-                filtered_data_list.append({'name': item['name'], 'df': df_filt, 'dt': item['dt']})
-                comp_data_list.append({'name': item['name'], 'df': df_filt, 'orig_df': item['df'], 'dt': item['dt']})
+                    if col in item['df'].columns:
+                        fft_vals = np.fft.rfft(item['df'][col].values) * item_dt
+                        df_filt[col] = np.fft.irfft(np.where(mask_freq, fft_vals, 0) / item_dt, n=n_samples)
+                        
+                filtered_data_list.append({'name': item['name'], 'df': df_filt, 'dt': item_dt})
+                comp_data_list.append({'name': item['name'], 'df': df_filt, 'orig_df': item['df'], 'dt': item_dt})
 
             if config.get('sep_plots'):
                 for col in axes_to_plot: generate_compare_figure(col, 'segment', filtered_data_list, f"{title_base} | Filtered: {low_cut} to {high_cut}Hz | Axis: {col.upper()}", f"Compare_{event_str}_Filt_{filter_label}_{col.upper()}")

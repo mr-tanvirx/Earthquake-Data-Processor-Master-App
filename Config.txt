@@ -1,0 +1,11 @@
+# Device Configuration List
+# Format: DeviceName, LocalIP, Cloud1IP, Cloud2IP, Username, Password
+BLCA 2, rp2.local, rp2.taile703b2.ts.net, 100.68.228.106, rin, 96321
+BLCA 3, rp3.local, rp3.taile703b2.ts.net, 100.108.206.59, rin, 96321
+BLCA 4, rp4.local, rp4.taile703b2.ts.net, 100.108.206.60, rin, 96321
+BLCA 5, rp5.local, rp5.taile703b2.ts.net, 100.108.206.61, rin, 96321
+BLCA 6, rp6.local, rp6.taile703b2.ts.net, 100.108.206.62, rin, 96321
+BLCA 7, rp7.local, rp7.taile703b2.ts.net, 100.108.206.63, rin, 96321
+BLCA 8, rp8.local, rp8.taile703b2.ts.net, 100.108.206.64, rin, 96321
+BLCA 10, rp10.local, rp10.taile703b2.ts.net, 100.108.206.66, rin, 96321
+BLCA 11, rp11.local, rp11.taile703b2.ts.net, 100.123.74.114, rin, 96321

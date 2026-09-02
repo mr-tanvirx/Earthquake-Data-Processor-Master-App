@@ -646,6 +646,9 @@ class App7Processor:
                         except Exception as e:
                             self.log_msg(f"Extraction error for {stat}: {e}")
 
+                except Exception as e:
+                    self.log_msg(f"Error processing individual trigger cluster for {stat}: {e}")
+
                 self.log_msg(json.dumps({"log": f"Exported & Mirrored {i+1}/{len(merged_events)}", "progress": i+1, "total": len(merged_events)}))
                 
             self.log_msg("Scan & Artifact Generation Complete.")

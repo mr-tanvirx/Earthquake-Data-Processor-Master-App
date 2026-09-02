@@ -1,6 +1,7 @@
 # processor_app2.py
 
 import json, gc, os
+import numpy as np
 import pandas as pd
 from pathlib import Path
 import concurrent.futures
@@ -31,9 +32,12 @@ class App2Processor:
                 <div class="input-group"><label>Target Directory (Input & Output Area)</label><input type="text" id="a2-target-dir" placeholder="e.g., C:\\My_Direct_Folder"></div>
                 <div class="input-group" style="margin-top: 15px;"><label>Custom Plot Title Base (Optional)</label><input type="text" id="a2-custom-title" placeholder="e.g., Earthquake Event 1"></div>
                 
-                <div class="input-group" style="margin-top: 15px;">
+                <div class="input-group" style="margin-top: 15px; display: flex; gap: 20px; flex-wrap: wrap;">
                     <label style="color: #007bff; font-weight: bold; cursor: pointer;">
                         <input type="checkbox" id="a2-mode-bias" checked> Auto-Center to 0 (Mode Average)
+                    </label>
+                    <label style="color: #17a2b8; font-weight: bold; cursor: pointer;">
+                        <input type="checkbox" id="a2-etabs-format"> ETABS Format (Skip 3 rows, 100Hz timeline)
                     </label>
                 </div>
 
@@ -147,6 +151,7 @@ class App2Processor:
                 "end-mm": document.getElementById('a2-em').value,
                 "end-ss": document.getElementById('a2-es').value,
                 "mode_bias": document.getElementById('a2-mode-bias').checked,
+                "etabs_format": document.getElementById('a2-etabs-format').checked,
                 "change-unit": pane.querySelector('.change-unit:checked')?.value || "n",
                 "unit-factor": document.getElementById('a2-unit-factor').value || "1/9.81",
                 "unit-name": document.getElementById('a2-unit-name').value || "g",
@@ -208,6 +213,9 @@ class App2Processor:
                     
                     if(conf.hasOwnProperty('mode_bias')) document.getElementById('a2-mode-bias').checked = conf['mode_bias'];
                     else document.getElementById('a2-mode-bias').checked = true;
+
+                    if(conf.hasOwnProperty('etabs_format')) document.getElementById('a2-etabs-format').checked = conf['etabs_format'];
+                    else document.getElementById('a2-etabs-format').checked = false;
 
                     if(conf.updated_titles) {
                         window._customTitles = Object.assign(window._customTitles || {}, conf.updated_titles);
@@ -288,6 +296,7 @@ class App2Processor:
                 end_mm: document.getElementById('a2-em').value,
                 end_ss: document.getElementById('a2-es').value,
                 mode_bias: document.getElementById('a2-mode-bias').checked,
+                etabs_format: document.getElementById('a2-etabs-format').checked,
                 filters: extractFiltersUI('a2-fc'),
                 dampings: extractDampingsUI('a2-dc'),
                 custom_title_base: document.getElementById('a2-custom-title').value,
@@ -360,9 +369,20 @@ class App2Processor:
                 try:
                     if f.suffix.lower() == '.parquet':
                         df_part = pd.read_parquet(f)
+                        if config.get('etabs_format'):
+                            df_part = df_part.iloc[3:]
                         if df_part.shape[1] >= 4: dfs.append(df_part.iloc[:, 0:4])
                     elif f.suffix.lower() == '.csv':
-                        df_part = pd.read_csv(f, sep=None, engine='python', on_bad_lines='skip')
+                        if config.get('etabs_format'):
+                            df_part = pd.read_csv(f, sep=None, engine='python', on_bad_lines='skip', header=None, skiprows=3)
+                        else:
+                            df_part = pd.read_csv(f, sep=None, engine='python', on_bad_lines='skip')
+                        if df_part.shape[1] >= 4: dfs.append(df_part.iloc[:, 0:4])
+                    elif f.suffix.lower() in ['.xlsx', '.xls']:
+                        if config.get('etabs_format'):
+                            df_part = pd.read_excel(f, header=None, skiprows=3)
+                        else:
+                            df_part = pd.read_excel(f)
                         if df_part.shape[1] >= 4: dfs.append(df_part.iloc[:, 0:4])
                 except Exception as e:
                     self.log_msg(f"[{station}] Skipping unreadable file {f.name}: {e}")
@@ -373,35 +393,70 @@ class App2Processor:
                 
             df = pd.concat(dfs, ignore_index=True)
             df.columns = ['timestamp', 'x', 'y', 'z']
+            
+            hz = 100.0
+            if config.get('etabs_format'):
+                df['timestamp'] = np.arange(len(df)) / hz
+                self.log_msg(f"[{station}] Applied ETABS format: Skipped header rows, generated {hz}Hz incremental timelines.")
+
             for col in ['timestamp', 'x', 'y', 'z']: df[col] = pd.to_numeric(df[col], errors='coerce')
-            df = df.dropna(subset=['timestamp', 'x', 'y', 'z'])
+            
+            if config.get('etabs_format'):
+                df = df.dropna(subset=['x', 'y', 'z']).sort_values('timestamp')
+            else:
+                df = df.dropna(subset=['timestamp', 'x', 'y', 'z']).sort_values('timestamp')
             
             if df.empty:
                 self.log_msg(f"[{station}] Data was empty after parsing to numerics.")
                 return
 
-            df['timestamp_dt'] = pd.to_datetime(df['timestamp'], unit='s')
-            
-            if config.get('has_time_range'):
-                base_date = df['timestamp_dt'].min().floor('D')
-                start_time_dt = base_date + pd.Timedelta(hours=int(config['start_hh']), minutes=int(config['start_mm']), seconds=float(config['start_ss']))
-                end_time_dt = base_date + pd.Timedelta(hours=int(config['end_hh']), minutes=int(config['end_mm']), seconds=float(config['end_ss']))
+            if config.get('etabs_format'):
+                dur = 0
+                has_time = config.get('has_time_range')
+                if has_time:
+                    sh, sm, ss = float(config['start_hh']), float(config['start_mm']), float(config['start_ss'])
+                    eh, em, es = float(config['end_hh']), float(config['end_mm']), float(config['end_ss'])
+                    start_sec = sh*3600 + sm*60 + ss
+                    end_sec = eh*3600 + em*60 + es
+                    if end_sec < start_sec: end_sec += 86400
+                    dur = end_sec - start_sec
+
+                requested_duration = dur if dur > 0 else (len(df) / hz)
+                start_secs = start_sec if has_time else 0.0
                 
-                # Handling Midnight Rollover / Day crossing
-                if (df['timestamp_dt'].min() - start_time_dt).total_seconds() > 12 * 3600:
-                    start_time_dt += pd.Timedelta(days=1)
-
-                if end_time_dt < start_time_dt:
-                    end_time_dt += pd.Timedelta(days=1)
-
-                mask = (df['timestamp_dt'] >= start_time_dt) & (df['timestamp_dt'] <= end_time_dt)
-                df_segment = df[mask].copy().sort_values('timestamp_dt')
-                event_str = base_date.strftime("%Y-%m-%d") + f"_{int(config['start_hh']):02d}-{int(config['start_mm']):02d}-{int(float(config['start_ss'])):02d}"
+                if start_secs >= (len(df) / hz):
+                    start_secs = 0.0
+                    
+                end_secs = start_secs + requested_duration
+                mask = (df['timestamp'] >= start_secs) & (df['timestamp'] <= end_secs)
+                df_segment = df[mask].copy().sort_values('timestamp')
+                
+                start_time_dt = pd.to_datetime('1970-01-01 00:00:00') + pd.Timedelta(seconds=start_secs)
+                end_time_dt = start_time_dt + pd.Timedelta(seconds=requested_duration)
+                df_segment['timestamp_dt'] = pd.to_datetime('1970-01-01 00:00:00') + pd.to_timedelta(df_segment['timestamp'], unit='s')
+                
+                event_str = f"ETABS_{int(start_secs)}s_to_{int(end_secs)}s"
             else:
-                df_segment = df.copy().sort_values('timestamp_dt')
-                start_time_dt = df_segment['timestamp_dt'].min()
-                end_time_dt = df_segment['timestamp_dt'].max()
-                event_str = start_time_dt.strftime("%Y-%m-%d_%H-%M-%S")
+                df['timestamp_dt'] = pd.to_datetime(df['timestamp'], unit='s')
+                if config.get('has_time_range'):
+                    base_date = df['timestamp_dt'].min().floor('D')
+                    start_time_dt = base_date + pd.Timedelta(hours=int(config['start_hh']), minutes=int(config['start_mm']), seconds=float(config['start_ss']))
+                    end_time_dt = base_date + pd.Timedelta(hours=int(config['end_hh']), minutes=int(config['end_mm']), seconds=float(config['end_ss']))
+                    
+                    if (df['timestamp_dt'].min() - start_time_dt).total_seconds() > 12 * 3600:
+                        start_time_dt += pd.Timedelta(days=1)
+
+                    if end_time_dt < start_time_dt:
+                        end_time_dt += pd.Timedelta(days=1)
+
+                    mask = (df['timestamp_dt'] >= start_time_dt) & (df['timestamp_dt'] <= end_time_dt)
+                    df_segment = df[mask].copy().sort_values('timestamp_dt')
+                    event_str = base_date.strftime("%Y-%m-%d") + f"_{int(config['start_hh']):02d}-{int(config['start_mm']):02d}-{int(float(config['start_ss'])):02d}"
+                else:
+                    df_segment = df.copy().sort_values('timestamp_dt')
+                    start_time_dt = df_segment['timestamp_dt'].min()
+                    end_time_dt = df_segment['timestamp_dt'].max()
+                    event_str = start_time_dt.strftime("%Y-%m-%d_%H-%M-%S")
             
             if not df_segment.empty:
                 if config.get('change_unit'):

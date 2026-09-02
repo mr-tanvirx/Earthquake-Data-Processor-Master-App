@@ -1,6 +1,6 @@
 import os, sys, importlib, inspect, threading, queue, json, webbrowser, shutil, socket
 from pathlib import Path
-from flask import Flask, request, jsonify, Response, render_template_string, send_from_directory
+from flask import Flask, request, jsonify, Response, render_template_string, send_from_directory, send_file
 
 app = Flask(__name__)
 log_queue = queue.Queue()
@@ -42,12 +42,56 @@ HTML_TEMPLATE = f"""
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Earthquake data process app by mr-tanvirx</title>
+    <title>BLCSN Data Process Software by mr-tanvirx</title>
     <style>
         :root {{ --bg-color: #f4f6f9; --text-color: #333; --header-bg: #2c3e50; --card-bg: white; --border-color: #ced4da; --tab-bg: #e9ecef; --tab-hover: #d3d9df; --input-bg: white; --input-text: #333; --station-header: #e9ecef; --log-bg: #1e1e1e; --duration-bg: #e2e3e5; --duration-text: #383d41; }}
         body.dark-mode {{ --bg-color: #121212; --text-color: #e0e0e0; --header-bg: #000000; --card-bg: #1e1e1e; --border-color: #333333; --tab-bg: #2c2c2c; --tab-hover: #3d3d3d; --input-bg: #2c2c2c; --input-text: #e0e0e0; --station-header: #2c2c2c; --log-bg: #000000; --duration-bg: #2c2c2c; --duration-text: #ffc107; }}
         body {{ font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; background: var(--bg-color); color: var(--text-color); transition: 0.3s; }}
-        .header {{ background: var(--header-bg); color: white; padding: 20px; text-align: center; font-weight: bold; font-size: 1.8em; position: relative; }}
+        
+        .header {{ 
+            background: var(--header-bg); 
+            color: white; 
+            padding: 20px; 
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            position: relative; 
+            min-height: 50px;
+        }}
+        .brand-container {{
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }}
+        .logo-img {{
+            height: 45px;
+            width: 45px;
+            object-fit: contain;
+        }}
+        .title-wrapper {{
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            line-height: 1.2;
+        }}
+        .main-title-text {{
+            font-weight: bold; 
+            font-size: 1.35em;
+        }}
+        .subscript-author {{
+            font-size: 0.55em;
+            font-weight: normal;
+            color: #a0aab2;
+            margin-top: 2px;
+        }}
+        .subscript-author a {{
+            color: #4da3ff; 
+            text-decoration: none;
+        }}
+        .subscript-author a:hover {{
+            text-decoration: underline;
+        }}
+        
         .theme-toggle-btn {{ position: absolute; right: 20px; top: 50%; transform: translateY(-50%); background: #007bff; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; }}
         .theme-toggle-btn:hover {{ background: #0056b3; }}
         .container {{ max-width: 1200px; margin: auto; padding: 20px; }}
@@ -103,7 +147,13 @@ HTML_TEMPLATE = f"""
 </head>
 <body>
     <div class="header">
-        Earthquake data process app by <a href="https://github.com/mr-tanvirx" target="_blank" style="color: #4da3ff; text-decoration: none;">mr-tanvirx</a>
+        <div class="brand-container">
+            <img src="/logo.png" class="logo-img" alt="BLCSN Logo">
+            <div class="title-wrapper">
+                <span class="main-title-text">BLCSN Data Process Software</span>
+                <sub class="subscript-author">by <a href="https://github.com/mr-tanvirx" target="_blank">mr-tanvirx</a></sub>
+            </div>
+        </div>
         <button class="theme-toggle-btn" onclick="toggleTheme()">Toggle Dark Mode</button>
     </div>
     <div class="container">
@@ -137,7 +187,7 @@ HTML_TEMPLATE = f"""
         let currentApp = '{sorted_apps[0][0] if sorted_apps else ""}';
         let evtSource = null;
         let currentStretchScale = 100;
-        window._customTitles = window._customTitles || {{}}; // Global store for user-edited titles
+        window._customTitles = window._customTitles || {{}};
 
         function toggleTheme() {{
             document.body.classList.toggle('dark-mode');
@@ -170,64 +220,66 @@ HTML_TEMPLATE = f"""
 
         function extractFiltersUI(containerId) {{
             const arr = [];
-            document.getElementById(containerId).querySelectorAll('.filter-row').forEach(row => {{
-                const l = row.querySelector('.low-cut').value, h = row.querySelector('.high-cut').value;
-                if(l && h) arr.push([parseFloat(l), parseFloat(h)]);
-            }});
+            const container = document.getElementById(containerId);
+            if(container) {{
+                container.querySelectorAll('.filter-row').forEach(row => {{
+                    const l = row.querySelector('.low-cut')?.value;
+                    const h = row.querySelector('.high-cut')?.value;
+                    if(l && h) arr.push([parseFloat(l), parseFloat(h)]);
+                }});
+            }}
             return arr;
         }}
+        
         function extractDampingsUI(containerId) {{
             const arr = [];
-            document.getElementById(containerId).querySelectorAll('.filter-row').forEach(row => {{
-                const v = row.querySelector('.damping-val').value;
-                if(v !== "") arr.push(parseFloat(v) / 100.0);
-            }});
+            const container = document.getElementById(containerId);
+            if(container) {{
+                container.querySelectorAll('.filter-row').forEach(row => {{
+                    const v = row.querySelector('.damping-val')?.value;
+                    if(v !== "" && v !== undefined) arr.push(parseFloat(v) / 100.0);
+                }});
+            }}
             if(arr.length === 0) arr.push(0.0);
             return arr;
         }}
+        
         function addFilterUI(id) {{
             const c = document.getElementById(id);
-            if(c.children.length < 10) c.innerHTML += '<div class="filter-row"><input type="number" step="0.1" class="low-cut" placeholder="Low"> to <input type="number" step="0.1" class="high-cut" placeholder="High"></div>';
+            if(c && c.children.length < 10) c.innerHTML += '<div class="filter-row"><input type="number" step="0.1" class="low-cut" placeholder="Low"> to <input type="number" step="0.1" class="high-cut" placeholder="High"></div>';
         }}
+        
         function addDampingUI(id) {{
             const c = document.getElementById(id);
-            if(c.children.length < 10) c.innerHTML += '<div class="filter-row"><input type="number" step="0.1" class="damping-val" placeholder="e.g. 5"></div>';
-        }}
-        function calculateDurationExact(sh_id, sm_id, ss_id, eh_id, em_id, es_id, out_id) {{
-            const sh = parseFloat(document.getElementById(sh_id)?.value || 0), sm = parseFloat(document.getElementById(sm_id)?.value || 0), ss = parseFloat(document.getElementById(ss_id)?.value || 0);
-            const eh = parseFloat(document.getElementById(eh_id)?.value || 0), em = parseFloat(document.getElementById(em_id)?.value || 0), es = parseFloat(document.getElementById(es_id)?.value || 0);
-            if(document.getElementById(sh_id).value === "") {{ document.getElementById(out_id).innerText = "Duration: Auto (Full Segment)"; return; }}
-            let diff = (eh * 3600 + em * 60 + es) - (sh * 3600 + sm * 60 + ss);
-            
-            // Fix for midnight crossover duration calculation
-            if (diff < 0) diff += 86400; 
-            
-            const displayDiff = Number.isInteger(diff) ? diff : diff.toFixed(3);
-            document.getElementById(out_id).innerText = `Duration: ${{displayDiff}} seconds`;
+            if(c && c.children.length < 10) c.innerHTML += '<div class="filter-row"><input type="number" step="0.1" class="damping-val" placeholder="e.g. 5"></div>';
         }}
 
         async function executeAppWorkflow(appId, payload) {{
-            document.getElementById('log-area').innerHTML = "";
+            const logArea = document.getElementById('log-area');
+            if(logArea) logArea.innerHTML = "";
             document.getElementById('svg-output').innerHTML = "";
             document.getElementById('progress-bar').style.width = "0%";
             document.getElementById('pagination-controls').style.display = 'none';
-            // Inject dynamically saved titles into payload automatically
             payload.updated_titles = window._customTitles;
             
-            const initBtn = document.getElementById('tab-' + appId).querySelector('.init-btn');
+            const initBtn = document.getElementById('tab-' + appId)?.querySelector('.init-btn');
             if(initBtn) initBtn.disabled = true;
+
+            listenToStream();
+
             try {{
                 const res = await fetch(`/api/${{appId}}/init`, {{ method: 'POST', headers: {{ 'Content-Type': 'application/json' }}, body: JSON.stringify(payload) }});
                 const data = await res.json();
-                if(data.status === "Initialized") loadNextPage();
-                else {{ document.getElementById('log-area').innerHTML += "> Init Error. " + (data.message || "") + "<br>"; if(initBtn) initBtn.disabled = false; }}
-            }} catch(e) {{ document.getElementById('log-area').innerHTML += "> Request failed.<br>"; if(initBtn) initBtn.disabled = false; }}
-        }}
-        
-        async function executeAppAction(appId, payload, silent = false) {{
-            if(!silent) {{ document.getElementById('log-area').innerHTML = ""; document.getElementById('svg-output').innerHTML = ""; }}
-            listenToStream();
-            await fetch(`/api/${{appId}}/run`, {{ method: 'POST', headers: {{ 'Content-Type': 'application/json' }}, body: JSON.stringify(payload) }});
+                if(data.status === "Initialized") {{
+                    loadNextPage();
+                }} else {{
+                    if(logArea) logArea.innerHTML += "> Init Error: " + (data.message || "Initialization failed.") + "<br>";
+                    if(initBtn) initBtn.disabled = false;
+                }}
+            }} catch(e) {{
+                if(logArea) logArea.innerHTML += "> Request failed: " + e + "<br>";
+                if(initBtn) initBtn.disabled = false;
+            }}
         }}
 
         function loadNextPage() {{
@@ -251,14 +303,14 @@ HTML_TEMPLATE = f"""
                     window._stCache = data.stations;
                     data.stations.forEach(st => document.getElementById('suffix-grid').innerHTML += `<div class="input-group"><label>${{st}}</label><input type="text" id="suffix-${{st}}" placeholder="Suffix (optional)"></div>`);
                     c.style.display = 'block';
-                    logArea.innerHTML += `<br>> Found ${{data.stations.length}} stations. Awaiting suffix inputs...<br>`;
+                    if(logArea) logArea.innerHTML += `<br>> Found ${{data.stations.length}} stations. Awaiting suffix inputs...<br>`;
                 }}
-                if (data.log) {{ logArea.innerHTML += data.log + "<br>"; logArea.scrollTop = logArea.scrollHeight; }}
-                if (data.progress !== undefined && data.total > 0) pb.style.width = Math.min(100, Math.round((data.progress / data.total) * 100)) + "%";
+                if (data.log) {{ if(logArea) {{ logArea.innerHTML += data.log + "<br>"; logArea.scrollTop = logArea.scrollHeight; }} }}
+                if (data.progress !== undefined && data.total > 0 && pb) pb.style.width = Math.min(100, Math.round((data.progress / data.total) * 100)) + "%";
                 
                 if (data.svg) {{
                     const svgOut = document.getElementById('svg-output');
-                    if (svgOut.innerHTML.includes("Processing events in background")) svgOut.innerHTML = "";
+                    if (svgOut && svgOut.innerHTML.includes("Processing events in background")) svgOut.innerHTML = "";
                     
                     const dateId = 'date-' + data.event_date.replace(/[^a-zA-Z0-9_-]/g, '_');
                     if (!document.getElementById(dateId)) svgOut.innerHTML += `<div class="date-group" id="${{dateId}}"><div class="date-header">Event: ${{data.event_date}}</div><div class="date-scroll-area" id="${{dateId}}-scroll"></div></div>`;
@@ -283,31 +335,26 @@ HTML_TEMPLATE = f"""
                         const newTitle = prompt("Update Plot Title:", oldTitle);
                         if (newTitle !== null && newTitle.trim() !== "") {{
                             const finalTitle = newTitle.trim();
-                            // Save globally so configs can capture it
                             window._customTitles[data.file_name] = finalTitle;
                             
-                            // Smart Update: Python textwrap splits titles into fragments.
-                            // We find all text nodes that look like parts of the title, 
-                            // replace the first one with the complete new title, and blank out the rest!
                             const svgTextEls = Array.from(wrapper.querySelectorAll('svg text'));
                             let replaced = false;
                             
                             svgTextEls.forEach(el => {{
                                 const txt = el.textContent.trim();
                                 if (txt.length >= 3 && oldTitle.includes(txt)) {{
-                                    // Matplotlib titles are always drawn near the top (y-coordinate < 80)
                                     const yAttr = parseFloat(el.getAttribute('y') || '1000');
                                     if (yAttr < 80) {{
                                         if (!replaced) {{
-                                            el.textContent = finalTitle; // Inject full updated title
+                                            el.textContent = finalTitle;
                                             replaced = true;
                                         }} else {{
-                                            el.textContent = ""; // Blank out leftover lines from the old wrapped title
+                                            el.textContent = "";
                                         }}
                                     }}
                                 }}
                             }});
-                            data.title = finalTitle; // update locally
+                            data.title = finalTitle;
                         }}
                     }};
 
@@ -318,7 +365,7 @@ HTML_TEMPLATE = f"""
                             document.getElementById('zoom-in-btn').style.display = 'none';
                             document.getElementById('zoom-out-btn').style.display = 'none';
                             document.getElementById('zoom-level-indicator').style.display = 'none';
-                            document.getElementById('stretch-modal').style.display = 'flex'; // Fix: flex preserves sizing layout instead of block
+                            document.getElementById('stretch-modal').style.display = 'flex';
                         }} else {{
                             currentStretchScale = 100;
                             document.getElementById('modal-title').innerText = data.title;
@@ -327,7 +374,7 @@ HTML_TEMPLATE = f"""
                             document.getElementById('zoom-out-btn').style.display = 'inline-block';
                             document.getElementById('zoom-level-indicator').style.display = 'inline-block';
                             document.getElementById('zoom-level-indicator').innerText = '100%';
-                            document.getElementById('stretch-modal').style.display = 'flex'; // Fix: flex preserves sizing layout
+                            document.getElementById('stretch-modal').style.display = 'flex';
                         }}
                     }};
                     document.getElementById(stId + '-plots').appendChild(wrapper);
@@ -337,13 +384,13 @@ HTML_TEMPLATE = f"""
                     evtSource.close();
                     if (data.has_more) {{
                         document.getElementById('pagination-controls').style.display = 'block';
-                        logArea.innerHTML += "<br><strong style='color:#ffc107;'>> CHUNK PAUSED to save RAM. Click 'Process Next' below.</strong><br>";
+                        if(logArea) logArea.innerHTML += "<br><strong style='color:#ffc107;'>> CHUNK PAUSED to save RAM. Click 'Process Next' below.</strong><br>";
                     }} else if (data.action !== 'request_suffixes') {{
-                        logArea.innerHTML += "<br><strong>> TASK COMPLETELY PROCESSED.</strong><br>";
+                        if(logArea) logArea.innerHTML += "<br><strong>> TASK COMPLETELY PROCESSED.</strong><br>";
                         const btn = document.getElementById('tab-' + currentApp)?.querySelector('.init-btn');
                         if (btn) btn.disabled = false;
                     }}
-                    logArea.scrollTop = logArea.scrollHeight;
+                    if(logArea) logArea.scrollTop = logArea.scrollHeight;
                 }}
             }};
         }}
@@ -358,6 +405,13 @@ HTML_TEMPLATE = f"""
 def index():
     return render_template_string(HTML_TEMPLATE)
 
+@app.route('/logo.png')
+def get_logo():
+    logo_path = Path("BLCSN_logo.png")
+    if logo_path.exists():
+        return send_file(logo_path, mimetype='image/png')
+    return jsonify({"error": "Logo file not found"}), 404
+
 @app.route('/view_html')
 def view_html():
     path = request.args.get('path')
@@ -367,33 +421,28 @@ def view_html():
 def init_app(app_id):
     if app_id in app_processors:
         while not log_queue.empty(): log_queue.get()
-        return jsonify(app_processors[app_id].initialize(request.json))
-    return jsonify({"status": "Error"})
+        res = app_processors[app_id].initialize(request.json)
+        if res.get("status") == "Initialized":
+            app_processors[app_id].state['is_running'] = True
+        return jsonify(res)
+    return jsonify({"status": "Error", "message": f"App processor {app_id} not found."})
 
 @app.route('/api/<app_id>/process', methods=['POST'])
 def process_app(app_id):
     if app_id in app_processors:
+        app_processors[app_id].state['is_running'] = True
         threading.Thread(target=app_processors[app_id].start_page_thread).start()
         return jsonify({"status": "Processing"})
-    return jsonify({"status": "Error"})
-
-@app.route('/api/<app_id>/run', methods=['POST'])
-def run_app(app_id):
-    if app_id in app_processors:
-        data = request.json or {}
-        action = data.get('action', 'run')
-        if not data.get('silent', False):
-            while not log_queue.empty(): log_queue.get()
-        threading.Thread(target=app_processors[app_id].run_custom_action, args=(action, data)).start()
-        return jsonify({"status": "Processing"})
-    return jsonify({"status": "Error"})
+    return jsonify({"status": "Error", "message": f"App processor {app_id} not found."})
 
 @app.route('/stream')
 def stream():
     def event_stream():
+        idle_count = 0
         while True:
             try:
-                msg = log_queue.get(timeout=0.1)
+                msg = log_queue.get(timeout=0.2)
+                idle_count = 0
                 prog = max([getattr(p, 'state', {}).get("progress", 0) for p in app_processors.values()] or [0])
                 tot = max([getattr(p, 'state', {}).get("total", 1) for p in app_processors.values()] or [1])
                 
@@ -407,7 +456,9 @@ def stream():
                 else:
                     yield f'data: {json.dumps({"log": msg, "progress": prog, "total": tot})}\n\n'
             except queue.Empty:
-                if not any([getattr(p, 'state', {}).get("is_running", False) for p in app_processors.values()]):
+                idle_count += 1
+                is_any_running = any([getattr(p, 'state', {}).get("is_running", False) for p in app_processors.values()])
+                if not is_any_running and idle_count > 15:
                     break
     return Response(event_stream(), mimetype="text/event-stream")
 
